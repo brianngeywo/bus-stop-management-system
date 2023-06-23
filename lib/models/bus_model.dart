@@ -1,35 +1,51 @@
-import 'package:bus_sacco/models/bus_route_model.dart';
-
 class BusModel {
-  String id;
+  int busId;
   String numberPlate;
-  String driver;
-  List<BusRouteModel> routes;
+  int routeId; // Store route ID instead of object
+  int saccoId; // Store sacco ID instead of object
+  int driverId; // Store driver ID instead of object
+  bool hasLeftSource;
+  bool hasArrivedDestination;
 
   BusModel({
-    required this.routes,
-    required this.id,
-    required this.driver,
+    required this.busId,
     required this.numberPlate,
+    required this.routeId,
+    required this.saccoId,
+    required this.driverId,
+    this.hasLeftSource = false,
+    this.hasArrivedDestination = false,
   });
 
-  BusModel fromMap(Map<String, dynamic> map) {
-    return BusModel(
-      id: map["id"],
-      routes: (map["routes"] as List<dynamic>)
-          .map((route) => BusRouteModel.fromMap(route))
-          .toList(),
-      driver: map["driver"],
-      numberPlate: map["numberPlate"],
-    );
+  void markLeftSource() {
+    hasLeftSource = true;
+  }
+
+  void markArrivedDestination() {
+    hasArrivedDestination = true;
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "id": id,
-      "routes": routes.map((route) => route.toMap()).toList(),
-      "driver": driver,
-      "numberPlate": numberPlate,
+      'busId': busId,
+      'numberPlate': numberPlate,
+      'routeId': routeId,
+      'saccoId': saccoId,
+      'driverId': driverId,
+      'hasLeftSource': hasLeftSource,
+      'hasArrivedDestination': hasArrivedDestination,
     };
+  }
+
+  factory BusModel.fromMap(Map<String, dynamic> map) {
+    return BusModel(
+      busId: map['busId'],
+      numberPlate: map['numberPlate'],
+      routeId: map['routeId'],
+      saccoId: map['saccoId'],
+      driverId: map['driverId'],
+      hasLeftSource: map['hasLeftSource'] ?? false,
+      hasArrivedDestination: map['hasArrivedDestination'] ?? false,
+    );
   }
 }
