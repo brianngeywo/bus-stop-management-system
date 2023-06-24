@@ -1,148 +1,106 @@
+import 'dart:math';
+
 import 'package:bus_sacco/models/bus_model.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
-import 'package:bus_sacco/models/bus_station.dart';
 import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
+import 'package:uuid/uuid.dart';
 
 List<SaccoModel> saccos = [
   SaccoModel(
-    saccoId: 1,
+    saccoId: Uuid().v4(),
     name: 'Sacco 1',
-    contactInfo: 'sacco1@email.com',
-  ),
-  SaccoModel(
-    saccoId: 2,
-    name: 'Sacco 2',
-    contactInfo: 'sacco2@email.com',
-  ),
-];
-
-List<BusStationModel> busStations = [
-  BusStationModel(
-    stationId: 1,
-    name: 'Denver Station',
+    emailAdress: 'sacco1@email.com',
+    phoneNumber: '123456789',
+    openingTime: '8 Am',
     location: 'Denver',
-    saccoIds: [
-      1,
+    closingTime: '9 Pm',
+    activeDays: [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
     ],
   ),
-  BusStationModel(
-    stationId: 2,
-    name: 'New York Station',
+  SaccoModel(
+    saccoId: Uuid().v4(),
+    name: 'Sacco 2',
+    emailAdress: 'sacco2@email.com',
+    phoneNumber: '987654321',
+    openingTime: '8 Am',
     location: 'New York',
-    saccoIds: [2],
-  ),
-  BusStationModel(
-    stationId: 3,
-    name: 'Chicago Station',
-    location: 'Chicago',
-    saccoIds: [1],
-  ),
-  BusStationModel(
-    stationId: 4,
-    name: 'San Francisco Station',
-    location: 'San Francisco',
-    saccoIds: [1],
-  ),
-  BusStationModel(
-    stationId: 5,
-    name: 'Seattle Station',
-    location: 'Seattle',
-    saccoIds: [2],
-  ),
-  BusStationModel(
-    stationId: 6,
-    name: 'Boston Station',
-    location: 'Boston',
-    saccoIds: [2],
-  ),
-  BusStationModel(
-    stationId: 7,
-    name: 'Miami Station',
-    location: 'Miami',
-    saccoIds: [1, 2],
-  ),
-  BusStationModel(
-    stationId: 8,
-    name: 'Houston Station',
-    location: 'Houston',
-    saccoIds: [2, 1],
-  ),
-  BusStationModel(
-    stationId: 9,
-    name: 'Phoenix Station',
-    saccoIds: [1],
-    location: 'Phoenix',
-  ),
-  BusStationModel(
-    stationId: 10,
-    name: 'Atlanta Station',
-    location: 'Atlanta',
-    saccoIds: [2],
+    closingTime: '9 Pm',
+    activeDays: [
+      'Monday',
+      'Tuesday',
+      'Thursday',
+      'Friday',
+    ],
   ),
 ];
 
 List<DriverModel> drivers = [
   DriverModel(
-    driverId: 1,
+    driverId: Uuid().v4(),
     name: 'John Doe',
     contactInfo: 'john@example.com',
-    saccoId: 1,
+    saccoId: saccos[Random().nextInt(saccos.length)].saccoId,
   ),
   DriverModel(
-    driverId: 2,
+    driverId: Uuid().v4(),
     name: 'Jane Smith',
     contactInfo: 'jane@example.com',
-    saccoId: 2,
+    saccoId: saccos[Random().nextInt(saccos.length)].saccoId,
   ),
   DriverModel(
-    driverId: 3,
+    driverId: Uuid().v4(),
     name: 'Michael Johnson',
     contactInfo: 'michael@example.com',
-    saccoId: 1,
+    saccoId: saccos[Random().nextInt(saccos.length)].saccoId,
   ),
   DriverModel(
-    driverId: 4,
+    driverId: Uuid().v4(),
     name: 'Emily Brown',
     contactInfo: 'emily@example.com',
-    saccoId: 2,
+    saccoId: saccos[Random().nextInt(saccos.length)].saccoId,
   ),
 ];
 
 List<BusModel> buses = [
   BusModel(
-    busId: 1,
+    busId: Uuid().v4(),
     numberPlate: 'ABC123',
-    routeId: 1,
-    saccoId: 1,
-    driverId: 1,
+    routeId: busRoutes[Random().nextInt(busRoutes.length)].routeId,
+    saccoId: saccos[Random().nextInt(saccos.length)].saccoId,
+    driverId: drivers[Random().nextInt(drivers.length)].driverId,
     hasLeftSource: false,
     hasArrivedDestination: false,
   ),
   BusModel(
-    busId: 2,
+    busId: Uuid().v4(),
     numberPlate: 'XYZ789',
-    routeId: 2,
-    saccoId: 2,
-    driverId: 2,
+    routeId: busRoutes[Random().nextInt(busRoutes.length)].routeId,
+    saccoId: saccos[Random().nextInt(saccos.length)].saccoId,
+    driverId: drivers[Random().nextInt(drivers.length)].driverId,
     hasLeftSource: true,
     hasArrivedDestination: false,
   ),
   BusModel(
-    busId: 3,
+    busId: Uuid().v4(),
     numberPlate: 'DEF456',
-    routeId: 1,
-    saccoId: 1,
-    driverId: 3,
+    routeId: busRoutes[Random().nextInt(busRoutes.length)].routeId,
+    saccoId: saccos[Random().nextInt(saccos.length)].saccoId,
+    driverId: drivers[Random().nextInt(drivers.length)].driverId,
     hasLeftSource: true,
     hasArrivedDestination: true,
   ),
   BusModel(
-    busId: 4,
+    busId: Uuid().v4(),
     numberPlate: 'PQR321',
-    routeId: 2,
-    saccoId: 2,
-    driverId: 4,
+    routeId: busRoutes[Random().nextInt(busRoutes.length)].routeId,
+    saccoId: saccos[Random().nextInt(saccos.length)].saccoId,
+    driverId: drivers[Random().nextInt(drivers.length)].driverId,
     hasLeftSource: false,
     hasArrivedDestination: true,
   ),
@@ -150,14 +108,14 @@ List<BusModel> buses = [
 
 List<BusRouteModel> busRoutes = [
   BusRouteModel(
-    routeId: 1,
+    routeId: Uuid().v4(),
     source: 'New York',
     destination: 'Los Angeles',
     stops: ['Chicago', 'Denver', 'Las Vegas'],
     fareRate: 50.0,
   ),
   BusRouteModel(
-    routeId: 2,
+    routeId: Uuid().v4(),
     source: 'California',
     destination: 'Toronto',
     stops: ['Las Vegas', 'Salt Lake City', 'Seattle'],

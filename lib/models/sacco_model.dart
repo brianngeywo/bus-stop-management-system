@@ -1,19 +1,34 @@
 class SaccoModel {
-  int saccoId;
+  String saccoId;
   String name;
-  String contactInfo;
+  String location;
+  String phoneNumber;
+  String emailAdress;
+  String openingTime;
+  String closingTime;
+  List<String> activeDays;
 
   SaccoModel({
     required this.saccoId,
     required this.name,
-    required this.contactInfo,
+    required this.location,
+    required this.phoneNumber,
+    required this.emailAdress,
+    required this.openingTime,
+    required this.closingTime,
+    required this.activeDays,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'saccoId': saccoId,
       'name': name,
-      'contactInfo': contactInfo,
+      'location': location,
+      'phoneNumber': phoneNumber,
+      'emailAdress': emailAdress,
+      'openingTime': openingTime,
+      'closingTime': closingTime,
+      'activeDays': activeDays,
     };
   }
 
@@ -21,7 +36,12 @@ class SaccoModel {
     return SaccoModel(
       saccoId: map['saccoId'],
       name: map['name'],
-      contactInfo: map['contactInfo'],
+      location: map['location'],
+      phoneNumber: map['phoneNumber'],
+      emailAdress: map['emailAdress'],
+      openingTime: map['openingTime'],
+      closingTime: map['closingTime'],
+      activeDays: List<String>.from(map['activeDays']),
     );
   }
 }

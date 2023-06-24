@@ -18,25 +18,25 @@ class BusStationDetailsScreen extends StatelessWidget {
       body: Column(
         children: [
           ListTile(
-            title: Text('Location:'),
+            title: const Text('Location:'),
             subtitle: Text(busStation.location),
           ),
           ListTile(
-            title: Text('ID:'),
+            title: const Text('ID:'),
             subtitle: Text(busStation.stationId.toString()),
           ),
-          SizedBox(height: 20),
-          Text('Saccos:',
+          const SizedBox(height: 20),
+          const Text('Saccos:',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: saccos.length,
             itemBuilder: (context, index) {
               SaccoModel sacco = saccos[index];
               return ListTile(
                 title: Text(sacco.name),
-                subtitle: Text('Contact: ${sacco.contactInfo}'),
+                subtitle: Text('Contact: ${sacco.phoneNumber}'),
                 trailing: Text('ID: ${sacco.saccoId}'),
                 onTap: () {
                   Navigator.push(

@@ -1,8 +1,8 @@
 class BusStationModel {
-  int stationId;
+  String stationId;
   String name;
   String location;
-  List<int> saccoIds;
+  List<String> saccoIds;
 
   BusStationModel({
     required this.stationId,
@@ -25,7 +25,7 @@ class BusStationModel {
       stationId: map['stationId'],
       name: map['name'],
       location: map['location'],
-      saccoIds: List<int>.from(map['saccoIds']),
+      saccoIds: List<String>.from(map['saccoIds']),
     );
   }
 }

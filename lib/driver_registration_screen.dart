@@ -1,7 +1,9 @@
+import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
 import 'package:bus_sacco/test_datas.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class DriverRegistrationScreen extends StatefulWidget {
   @override
@@ -18,49 +20,49 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Name',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             TextFormField(
               onChanged: (value) {
                 setState(() {
                   _name = value;
                 });
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter Name',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 16.0),
+            const Text(
               'Contact Info',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             TextFormField(
               onChanged: (value) {
                 setState(() {
                   _contactInfo = value;
                 });
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter Contact Info',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 16.0),
+            const Text(
               'Sacco',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             DropdownButton<SaccoModel>(
               value: _selectedSacco,
               onChanged: (value) {
@@ -75,7 +77,7 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
                 );
               }).toList(),
             ),
-            SizedBox(height: 24.0),
+            const SizedBox(height: 24.0),
             ElevatedButton(
               onPressed: () {
                 // Save the Driver details and navigate to the next screen
@@ -85,14 +87,17 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
                     name: _name,
                     contactInfo: _contactInfo,
                     saccoId: _selectedSacco!.saccoId,
-                    driverId: drivers.length + 1,
+                    driverId: const Uuid().v4(),
                   );
 
-                  // Save the driver details or perform any desired action
-                  // ...
-
-                  // Navigate to the next screen
-                  // ...
+                  // Save the driver details to firestore database
+                  driversCollection.doc(driver.driverId).set(driver.toMap());
+                  //show a snackbar
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Driver registered successfully'),
+                    ),
+                  );
                 }
               },
               child: const Text('Register Driver'),

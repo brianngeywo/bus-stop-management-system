@@ -1,4 +1,5 @@
 import 'package:bus_sacco/bus_route_details_screen.dart';
+import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/driver_details_screen.dart';
 import 'package:bus_sacco/models/bus_model.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
@@ -8,41 +9,46 @@ import 'package:bus_sacco/sacco_details_screen.dart';
 import 'package:bus_sacco/test_datas.dart';
 import 'package:flutter/material.dart';
 
-class BusDetailsScreen extends StatelessWidget {
+class BusDetailsScreen extends StatefulWidget {
   final BusModel bus;
 
-  BusDetailsScreen({required this.bus});
+  BusDetailsScreen({super.key, required this.bus});
 
+  @override
+  State<BusDetailsScreen> createState() => _BusDetailsScreenState();
+}
+
+class _BusDetailsScreenState extends State<BusDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     // Retrieve the related entities
-    final DriverModel driver = getDriverById(bus.driverId);
-    final BusRouteModel route = getRouteById(bus.routeId);
-    final SaccoModel sacco = getSaccoById(bus.saccoId);
+    final DriverModel driver = getDriverById(widget.bus.driverId);
+    final BusRouteModel route = getRouteById(widget.bus.routeId);
+    final SaccoModel? sacco = getSaccoById(widget.bus.saccoId);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bus Details'),
+        title: const Text('Bus Details'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
-              'Bus ID: ${bus.busId}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              'Bus ID: ${widget.bus.busId}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
-              'Number Plate: ${bus.numberPlate}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              'Number Plate: ${widget.bus.numberPlate}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: GestureDetector(
               onTap: () {
                 // Navigate to BusRouteDetailsScreen
@@ -55,12 +61,13 @@ class BusDetailsScreen extends StatelessWidget {
               },
               child: Text(
                 'Route: ${route.source} - ${route.destination}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: GestureDetector(
               onTap: () {
                 // Navigate to SaccoDetailsScreen
@@ -72,13 +79,14 @@ class BusDetailsScreen extends StatelessWidget {
                 );
               },
               child: Text(
-                'Sacco: ${sacco.name}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                'Sacco: ${sacco!.name}',
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: GestureDetector(
               onTap: () {
                 // Navigate to DriverDetailsScreen
@@ -91,22 +99,23 @@ class BusDetailsScreen extends StatelessWidget {
               },
               child: Text(
                 'Driver: ${driver.name}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
-              'Has Left Source: ${bus.hasLeftSource}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              'Has Left Source: ${widget.bus.hasLeftSource}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
-              'Has Arrived at Destination: ${bus.hasArrivedDestination}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              'Has Arrived at Destination: ${widget.bus.hasArrivedDestination}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -115,24 +124,28 @@ class BusDetailsScreen extends StatelessWidget {
   }
 
   // Helper functions to retrieve related entities
-  DriverModel getDriverById(int driverId) {
+  DriverModel getDriverById(String driverId) {
     // Replace this with your actual implementation
     // Query the database or use any other logic to fetch the driver
     // based on the driverId
     return drivers.firstWhere((driver) => driver.driverId == driverId);
   }
 
-  BusRouteModel getRouteById(int routeId) {
+  BusRouteModel getRouteById(String routeId) {
     // Replace this with your actual implementation
     // Query the database or use any other logic to fetch the route
     // based on the routeId
     return busRoutes.firstWhere((route) => route.routeId == routeId);
   }
 
-  SaccoModel getSaccoById(int saccoId) {
-    // Replace this with your actual implementation
-    // Query the database or use any other logic to fetch the sacco
-    // based on the saccoId
-    return saccos.firstWhere((sacco) => sacco.saccoId == saccoId);
+  SaccoModel? getSaccoById(String saccoId) {
+    SaccoModel? saccoModel;
+    saccoCollection.doc(saccoId).get().then((value) {
+      setState(() {
+        saccoModel = SaccoModel.fromMap(value.data()!);
+      });
+      return saccoModel;
+    });
+    return saccoModel;
   }
 }

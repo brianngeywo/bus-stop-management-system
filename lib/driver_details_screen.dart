@@ -18,20 +18,20 @@ class DriverDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Driver Details'),
+        title: const Text('Driver Details'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Text(
               'Driver Name: ${driver.name}',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
-          Divider(),
-          Padding(
+          const Divider(),
+          const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
               'Assigned Buses:',
@@ -46,7 +46,7 @@ class DriverDetailsScreen extends StatelessWidget {
                 final route =
                     routes.firstWhere((route) => route.routeId == bus.routeId,
                         orElse: () => BusRouteModel(
-                              routeId: 0,
+                              routeId: '',
                               source: 'N/A',
                               destination: 'N/A',
                               stops: [],
@@ -76,7 +76,7 @@ class DriverDetailsScreen extends StatelessWidget {
   }
 
   // Helper functions to retrieve related bus and route information
-  List<BusModel> getBusesByDriverId(int driverId) {
+  List<BusModel> getBusesByDriverId(String driverId) {
     // Replace this with your actual implementation
     // Query the database or use any other logic to fetch the related buses
     // based on the driverId
@@ -85,7 +85,7 @@ class DriverDetailsScreen extends StatelessWidget {
     return relatedBuses;
   }
 
-  List<BusRouteModel> getRoutesByDriverId(int driverId) {
+  List<BusRouteModel> getRoutesByDriverId(String driverId) {
     // Replace this with your actual implementation
     // Query the database or use any other logic to fetch the related routes
     // based on the driverId

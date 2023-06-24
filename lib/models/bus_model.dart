@@ -1,9 +1,9 @@
 class BusModel {
-  int busId;
+  String busId;
   String numberPlate;
-  int routeId; // Store route ID instead of object
-  int saccoId; // Store sacco ID instead of object
-  int driverId; // Store driver ID instead of object
+  String routeId; // Store route ID instead of object
+  String saccoId; // Store sacco ID instead of object
+  String driverId; // Store driver ID instead of object
   bool hasLeftSource;
   bool hasArrivedDestination;
 

@@ -1,8 +1,8 @@
 class DriverModel {
-  int driverId;
+  String driverId;
   String name;
   String contactInfo;
-  int saccoId; // Store sacco ID instead of object
+  String saccoId; // Store sacco ID instead of object
 
   DriverModel({
     required this.driverId,

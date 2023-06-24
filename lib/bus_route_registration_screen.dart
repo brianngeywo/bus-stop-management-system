@@ -1,6 +1,7 @@
 import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/test_datas.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class BusRouteRegistrationScreen extends StatefulWidget {
   @override
@@ -40,7 +41,7 @@ class _BusRouteRegistrationScreenState
     final double fareRate = double.parse(_fareRateController.text);
 
     final BusRouteModel newBusRoute = BusRouteModel(
-      routeId: busRoutes.length + 1, // Assign a unique ID
+      routeId: Uuid().v4(), // Assign a unique ID
       source: source,
       destination: destination,
       stops: _stops,

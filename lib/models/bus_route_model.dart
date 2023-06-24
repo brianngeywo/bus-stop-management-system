@@ -1,5 +1,5 @@
 class BusRouteModel {
-  int routeId;
+  String routeId;
   String source;
   String destination;
   List<String> stops;

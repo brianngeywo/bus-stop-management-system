@@ -17,47 +17,47 @@ class BusRouteDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Route Details'),
+        title: const Text('Route Details'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
               'Route ID: ${route.routeId}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
               'Source: ${route.source}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
               'Destination: ${route.destination}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
               'Stops: ${route.stops.join(', ')}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
               'Fare Rate: ${route.fareRate}',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.all(16),
             child: Text(
               'Buses:',
@@ -72,15 +72,15 @@ class BusRouteDetailsScreen extends StatelessWidget {
                 final driver = drivers.firstWhere(
                   (driver) => driver.driverId == bus.driverId,
                   orElse: () => DriverModel(
-                    driverId: 0,
+                    driverId: "",
                     name: 'N/A',
                     contactInfo: 'N/A',
-                    saccoId: 0,
+                    saccoId: 'N/A',
                   ),
                 );
 
                 return ListTile(
-                  title: Text('Bus Details:'),
+                  title: const Text('Bus Details:'),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -100,14 +100,14 @@ class BusRouteDetailsScreen extends StatelessWidget {
   }
 
   // Helper functions to retrieve related buses and drivers
-  List<BusModel> getBusesByRouteId(int routeId) {
+  List<BusModel> getBusesByRouteId(String routeId) {
     // Replace this with your actual implementation
     // Query the database or use any other logic to fetch the related buses
     // based on the routeId
     return buses.where((bus) => bus.routeId == routeId).toList();
   }
 
-  List<DriverModel> getDriversByRouteId(int routeId) {
+  List<DriverModel> getDriversByRouteId(String routeId) {
     // Replace this with your actual implementation
     // Query the database or use any other logic to fetch the related drivers
     // based on the routeId

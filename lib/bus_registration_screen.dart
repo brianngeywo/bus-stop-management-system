@@ -1,5 +1,8 @@
+import 'package:bus_sacco/constants.dart';
+import 'package:bus_sacco/models/bus_model.dart';
 import 'package:bus_sacco/test_datas.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class BusRegistrationScreen extends StatefulWidget {
   @override
@@ -7,104 +10,107 @@ class BusRegistrationScreen extends StatefulWidget {
 }
 
 class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
-  int _busId = 0;
+  String _busId = '';
   String _numberPlate = '';
-  int _selectedRouteId = 0;
-  int _selectedSaccoId = 0;
-  int _selectedDriverId = 0;
-  List<int> _selectedRoutes = [];
-  List<int> _selectedSaccos = [];
-  List<int> _selectedDrivers = [];
+  String _selectedRouteId = '';
+  String _selectedSaccoId = "";
+  String _selectedDriverId = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bus Registration'),
+        title: const Text('Bus Registration'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Bus ID',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8.0),
-            TextFormField(
-              onChanged: (value) {
-                setState(() {
-                  _busId = int.tryParse(value) ?? 0;
-                });
-              },
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: 'Enter Bus ID',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 6.0),
+            const Text(
               'Number Plate',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             TextFormField(
               onChanged: (value) {
                 setState(() {
                   _numberPlate = value;
                 });
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Enter Number Plate',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 16.0),
+            const Text(
               'Routes',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Wrap(
               spacing: 8.0,
               children: _buildRouteChips(),
             ),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 16.0),
+            const Text(
               'Sacco',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Wrap(
               spacing: 8.0,
               children: _buildSaccoChips(),
             ),
-            SizedBox(height: 16.0),
-            Text(
+            const SizedBox(height: 16.0),
+            const Text(
               'Driver',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Wrap(
               spacing: 8.0,
               children: _buildDriverChips(),
             ),
-            SizedBox(height: 24.0),
+            const SizedBox(height: 24.0),
             ElevatedButton(
               onPressed: () {
-                // Save the Bus details and navigate to the next screen
-                // or perform any desired action
+                // Create new bus object
+                final bus = BusModel(
+                  busId: const Uuid().v4(),
+                  numberPlate: _numberPlate,
+                  saccoId: _selectedSaccoId,
+                  driverId: _selectedDriverId,
+                  routeId: _selectedRouteId,
+                );
 
                 // Print the selected bus details for testing
                 print('Bus ID: $_busId');
                 print('Number Plate: $_numberPlate');
-                print('Selected Routes: $_selectedRoutes');
+                print('Selected Routes: $_selectedRouteId');
                 print('Selected Sacco ID: $_selectedSaccoId');
                 print('Selected Driver ID: $_selectedDriverId');
+
+                //save bus to firestore
+                busesCollection.doc(bus.busId).set(bus.toMap());
+                // Clear the form
+                setState(() {
+                  _busId = '';
+                  _numberPlate = '';
+                  _selectedSaccoId = "";
+                  _selectedRouteId = "";
+                  _selectedDriverId = "";
+                });
+                // Show a snackbar
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Bus registered successfully'),
+                  ),
+                );
               },
-              child: Text('Register Bus'),
+              child: const Text('Register Bus'),
             ),
           ],
         ),
@@ -114,16 +120,17 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
 
   List<Widget> _buildRouteChips() {
     return busRoutes.map((route) {
-      final isSelected = _selectedRoutes.contains(route.routeId);
+      final isSelected = _selectedRouteId == route.routeId;
       return ChoiceChip(
         label: Text(route.source + ' - ' + route.destination),
+        selectedColor: Colors.blueAccent,
         selected: isSelected,
         onSelected: (selected) {
           setState(() {
             if (selected) {
-              _selectedRoutes.add(route.routeId);
+              _selectedRouteId = route.routeId;
             } else {
-              _selectedRoutes.remove(route.routeId);
+              _selectedRouteId = "";
             }
           });
         },
@@ -136,13 +143,14 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
       final isSelected = _selectedSaccoId == sacco.saccoId;
       return ChoiceChip(
         label: Text(sacco.name),
+        selectedColor: Colors.blueAccent,
         selected: isSelected,
         onSelected: (selected) {
           setState(() {
             if (selected) {
               _selectedSaccoId = sacco.saccoId;
             } else {
-              _selectedSaccoId = 0;
+              _selectedSaccoId = "";
             }
           });
         },
@@ -155,13 +163,14 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
       final isSelected = _selectedDriverId == driver.driverId;
       return ChoiceChip(
         label: Text('Driver ${driver.name}'),
+        selectedColor: Colors.blueAccent,
         selected: isSelected,
         onSelected: (selected) {
           setState(() {
             if (selected) {
               _selectedDriverId = driver.driverId;
             } else {
-              _selectedDriverId = 0;
+              _selectedDriverId = "";
             }
           });
         },

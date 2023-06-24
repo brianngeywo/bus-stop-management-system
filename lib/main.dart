@@ -6,15 +6,21 @@ import 'package:bus_sacco/bus_station_registration_screen.dart';
 import 'package:bus_sacco/bus_stations_view_screen.dart';
 import 'package:bus_sacco/buses_screen.dart';
 import 'package:bus_sacco/driver_registration_screen.dart';
+import 'package:bus_sacco/firebase_options.dart';
 import 'package:bus_sacco/sacco_registration_screen.dart';
 import 'package:bus_sacco/saccos_screen.dart';
-import 'package:bus_sacco/test_datas.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'dashboard_screen.dart';
 import 'drivers_screen.dart';
 
-void main() {
+//initialize firebase
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  //add firebase options to flutter main
+
   runApp(DashboardApp());
 }
 
@@ -28,10 +34,7 @@ class DashboardApp extends StatelessWidget {
       darkTheme: AppTheme.darkTheme,
       home: DashboardScreen(),
       routes: {
-        '/bus_stations': (context) => BusStationsViewScreen(
-              busStations: busStations,
-              saccos: saccos,
-            ),
+        '/bus_stations': (context) => BusStationsViewScreen(),
         '/saccos': (context) => SaccosScreen(),
         '/drivers': (context) => DriversScreen(),
         '/buses': (context) => BusesScreen(),
