@@ -1,5 +1,5 @@
+import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
-import 'package:bus_sacco/test_datas.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -41,14 +41,14 @@ class _BusRouteRegistrationScreenState
     final double fareRate = double.parse(_fareRateController.text);
 
     final BusRouteModel newBusRoute = BusRouteModel(
-      routeId: Uuid().v4(), // Assign a unique ID
+      routeId: const Uuid().v4(), // Assign a unique ID
       source: source,
       destination: destination,
       stops: _stops,
       fareRate: fareRate,
     );
 
-    busRoutes.add(newBusRoute); // Add the new route to the list
+    busRoutesCollection.doc(newBusRoute.routeId).set(newBusRoute.toMap());
 
     _sourceController.clear();
     _destinationController.clear();
@@ -60,11 +60,11 @@ class _BusRouteRegistrationScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Success'),
-        content: Text('Bus route registered successfully.'),
+        title: const Text('Success'),
+        content: const Text('Bus route registered successfully.'),
         actions: [
           TextButton(
-            child: Text('OK'),
+            child: const Text('OK'),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
@@ -76,10 +76,10 @@ class _BusRouteRegistrationScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register Bus Route'),
+        title: const Text('Register Bus Route'),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -87,39 +87,39 @@ class _BusRouteRegistrationScreenState
                 children: [
                   TextField(
                     controller: _sourceController,
-                    decoration: InputDecoration(labelText: 'Source'),
+                    decoration: const InputDecoration(labelText: 'Source'),
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   TextField(
                     controller: _destinationController,
-                    decoration: InputDecoration(labelText: 'Destination'),
+                    decoration: const InputDecoration(labelText: 'Destination'),
                   ),
-                  SizedBox(height: 16.0),
-                  Text('Stops',
+                  const SizedBox(height: 16.0),
+                  const Text('Stops',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: _stops.length,
                     itemBuilder: (context, index) => _buildStopTextField(index),
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   TextButton(
                     onPressed: _addStop,
-                    child: Text('Add Stop'),
+                    child: const Text('Add Stop'),
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   TextField(
                     controller: _fareRateController,
-                    decoration: InputDecoration(labelText: 'Fare Rate'),
+                    decoration: const InputDecoration(labelText: 'Fare Rate'),
                     keyboardType: TextInputType.number,
                   ),
-                  SizedBox(height: 24.0),
+                  const SizedBox(height: 24.0),
                   ElevatedButton(
                     onPressed: _registerBusRoute,
-                    child: Text('Register'),
+                    child: const Text('Register'),
                   ),
                 ],
               ),
@@ -137,7 +137,7 @@ class _BusRouteRegistrationScreenState
           ),
         ),
         IconButton(
-          icon: Icon(Icons.remove_circle),
+          icon: const Icon(Icons.remove_circle),
           onPressed: () => _removeStop(index),
         ),
       ],

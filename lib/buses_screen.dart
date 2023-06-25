@@ -42,18 +42,18 @@ class _BusesScreenState extends State<BusesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Buses'),
+        title: const Text('Buses'),
       ),
       body: StreamBuilder<List<BusModel>>(
           stream: _fetchBusesFromFirestore(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              return Center(
+              return const Center(
                 child: Text('Something went wrong'),
               );
             }
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }
@@ -78,8 +78,8 @@ class _BusesScreenState extends State<BusesScreen> {
                     );
                   });
             }
-            return Center(
-              child: Text('No buses found'),
+            return const Center(
+              child: CircularProgressIndicator(),
             );
           }),
     );

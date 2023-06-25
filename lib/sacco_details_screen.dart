@@ -1,17 +1,31 @@
 import 'package:bus_sacco/bus_details_screen.dart';
 import 'package:bus_sacco/bus_route_details_screen.dart';
+import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/driver_details_screen.dart';
 import 'package:bus_sacco/models/bus_model.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
-import 'package:bus_sacco/test_datas.dart';
 import 'package:flutter/material.dart';
 
-class SaccoDetailsScreen extends StatelessWidget {
+class SaccoDetailsScreen extends StatefulWidget {
   final SaccoModel sacco;
 
   SaccoDetailsScreen({required this.sacco});
+
+  @override
+  State<SaccoDetailsScreen> createState() => _SaccoDetailsScreenState();
+}
+
+class _SaccoDetailsScreenState extends State<SaccoDetailsScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    getBusesBySaccoId(widget.sacco.saccoId);
+    getBusRoutesBySaccoId(widget.sacco.saccoId);
+    getDriversBySaccoId(widget.sacco.saccoId);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +47,7 @@ class SaccoDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8.0),
             Text(
-              sacco.name,
+              widget.sacco.name,
               style: const TextStyle(fontSize: 16.0),
             ),
             const SizedBox(height: 16.0),
@@ -46,11 +60,11 @@ class SaccoDetailsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8.0),
             Text(
-              'Phone: ${sacco.phoneNumber}',
+              'Phone: ${widget.sacco.phoneNumber}',
               style: const TextStyle(fontSize: 16.0),
             ),
             Text(
-              'Email: ${sacco.emailAdress}',
+              'Email: ${widget.sacco.emailAdress}',
               style: const TextStyle(fontSize: 16.0),
             ),
             const SizedBox(height: 24.0),
@@ -65,9 +79,9 @@ class SaccoDetailsScreen extends StatelessWidget {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: sacco.activeDays.length,
+              itemCount: widget.sacco.activeDays.length,
               itemBuilder: (context, index) {
-                var day = sacco.activeDays[index];
+                var day = widget.sacco.activeDays[index];
                 return ListTile(
                   title: Text(day),
                 );
@@ -82,27 +96,57 @@ class SaccoDetailsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8.0),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: getDriversBySaccoId(sacco.saccoId).length,
-              itemBuilder: (context, index) {
-                DriverModel driver = getDriversBySaccoId(sacco.saccoId)[index];
-                return ListTile(
-                  title: Text(driver.name),
-                  subtitle: Text('Driver ID: ${driver.driverId}'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            DriverDetailsScreen(driver: driver),
-                      ),
+            StreamBuilder<List<DriverModel>>(
+                stream: getDriversBySaccoIdStream(widget.sacco.saccoId),
+                builder: (context, snapshot) {
+                  if (snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('No drivers found'),
                     );
-                  },
-                );
-              },
-            ),
+                  }
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('An error occurred'),
+                    );
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.connectionState == ConnectionState.none) {
+                    return const Center(
+                      child: Text('No drivers found'),
+                    );
+                  }
+                  if (snapshot.hasData) {
+                    var drivers = snapshot.data!;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: drivers.length,
+                      itemBuilder: (context, index) {
+                        DriverModel driver = drivers[index];
+                        return ListTile(
+                          title: Text('Name: ${driver.name}'),
+                          subtitle: Text('Phone: ${driver.contactInfo}'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    DriverDetailsScreen(driver: driver),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }),
             const SizedBox(height: 24.0),
             const Text(
               'Buses:',
@@ -112,26 +156,67 @@ class SaccoDetailsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8.0),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: getBusesBySaccoId(sacco.saccoId).length,
-              itemBuilder: (context, index) {
-                BusModel bus = getBusesBySaccoId(sacco.saccoId)[index];
-                return ListTile(
-                  title: Text('Bus Number: ${bus.numberPlate}'),
-                  subtitle: Text('Route ID: ${bus.routeId}'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BusDetailsScreen(bus: bus),
-                      ),
+            StreamBuilder<List<BusModel>>(
+                stream: getBusesBySaccoIdStream(widget.sacco.saccoId),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
                     );
-                  },
-                );
-              },
-            ),
+                  }
+                  if (snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('No buses found'),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('An error occurred'),
+                    );
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.connectionState == ConnectionState.none) {
+                    return const Center(
+                      child: Text('No buses found'),
+                    );
+                  }
+                  if (snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('No buses found'),
+                    );
+                  }
+                  if (snapshot.hasData) {
+                    var buses = snapshot.data!;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: buses.length,
+                      itemBuilder: (context, index) {
+                        BusModel bus = buses[index];
+                        return ListTile(
+                          title: Text('Bus Number: ${bus.numberPlate}'),
+                          subtitle: Text('Route ID: ${bus.routeId}'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    BusDetailsScreen(bus: bus),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }),
             const SizedBox(height: 24.0),
             const Text(
               'Routes:',
@@ -141,27 +226,57 @@ class SaccoDetailsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8.0),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: getRoutesBySaccoId(sacco.saccoId).length,
-              itemBuilder: (context, index) {
-                BusRouteModel route = getRoutesBySaccoId(sacco.saccoId)[index];
-                return ListTile(
-                  title: Text('Source: ${route.source}'),
-                  subtitle: Text('Destination: ${route.destination}'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            BusRouteDetailsScreen(route: route),
-                      ),
+            StreamBuilder<List<BusRouteModel>>(
+                stream: getBusRoutesBySaccoIdStream(widget.sacco.saccoId),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    var routes = snapshot.data!;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: routes.length,
+                      itemBuilder: (context, index) {
+                        BusRouteModel route = routes[index];
+                        return ListTile(
+                          title: Text('Source: ${route.source}'),
+                          subtitle: Text('Destination: ${route.destination}'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    BusRouteDetailsScreen(route: route),
+                              ),
+                            );
+                          },
+                        );
+                      },
                     );
-                  },
-                );
-              },
-            ),
+                  }
+                  if (snapshot.data!.isEmpty || snapshot.data == null) {
+                    return const Center(
+                      child: Text('No routes found'),
+                    );
+                  }
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('An error occurred'),
+                    );
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.connectionState == ConnectionState.none) {
+                    return const Center(
+                      child: Text('No routes found'),
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }),
           ],
         ),
       ),
@@ -170,27 +285,61 @@ class SaccoDetailsScreen extends StatelessWidget {
 
   // Helper functions to retrieve related driver, bus, and route information for a Sacco
   List<DriverModel> getDriversBySaccoId(String saccoId) {
+    List<DriverModel> drivers = [];
     // Replace this with your actual implementation
-    List<DriverModel> relatedDrivers =
-        drivers.where((driver) => driver.saccoId == saccoId).toList();
-    return relatedDrivers;
+    driversCollection.where('saccoId', isEqualTo: saccoId).get().then((value) {
+      value.docs.forEach((element) {
+        drivers.add(DriverModel.fromMap(element.data()));
+      });
+    });
+    return drivers;
+  }
+
+  Stream<List<DriverModel>> getDriversBySaccoIdStream(String saccoId) {
+    return driversCollection
+        .where('saccoId', isEqualTo: saccoId)
+        .snapshots()
+        .map((querySnapshot) => querySnapshot.docs
+            .map((doc) => DriverModel.fromMap(doc.data()))
+            .toList());
   }
 
   List<BusModel> getBusesBySaccoId(String saccoId) {
-    // Replace this with your actual implementation
-    List<BusModel> relatedBuses =
-        buses.where((bus) => bus.saccoId == saccoId).toList();
-    return relatedBuses;
+    List<BusModel> buses = [];
+    busesCollection.where('saccoId', isEqualTo: saccoId).get().then((value) {
+      value.docs.forEach((element) {
+        buses.add(BusModel.fromMap(element.data()));
+      });
+    });
+    return buses;
   }
 
-  List<BusRouteModel> getRoutesBySaccoId(String saccoId) {
-    //get list of buses by sacco id
+  Stream<List<BusModel>>? getBusesBySaccoIdStream(String saccoId) {
+    return busesCollection.where('saccoId', isEqualTo: saccoId).snapshots().map(
+        (querySnapshot) => querySnapshot.docs
+            .map((doc) => BusModel.fromMap(doc.data()))
+            .toList());
+  }
 
-    // Replace this with your actual implementation
-    List<BusRouteModel> relatedRoutes = busRoutes
-        .where((route) => getBusesBySaccoId(saccoId)
-            .any((bus) => bus.routeId == route.routeId))
-        .toList();
-    return relatedRoutes;
+  List<BusRouteModel> getBusRoutesBySaccoId(String saccoId) {
+    List<BusRouteModel> routes = [];
+    busRoutesCollection
+        .where('saccoId', isEqualTo: saccoId)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        routes.add(BusRouteModel.fromMap(element.data()));
+      });
+    });
+    return routes;
+  }
+
+  Stream<List<BusRouteModel>> getBusRoutesBySaccoIdStream(String saccoId) {
+    return busRoutesCollection
+        .where('saccoId', isEqualTo: saccoId)
+        .snapshots()
+        .map((querySnapshot) => querySnapshot.docs
+            .map((doc) => BusRouteModel.fromMap(doc.data()))
+            .toList());
   }
 }

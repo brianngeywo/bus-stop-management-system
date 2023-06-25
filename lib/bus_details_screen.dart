@@ -6,7 +6,6 @@ import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
 import 'package:bus_sacco/sacco_details_screen.dart';
-import 'package:bus_sacco/test_datas.dart';
 import 'package:flutter/material.dart';
 
 class BusDetailsScreen extends StatefulWidget {
@@ -19,12 +18,23 @@ class BusDetailsScreen extends StatefulWidget {
 }
 
 class _BusDetailsScreenState extends State<BusDetailsScreen> {
+  DriverModel? driver;
+  BusRouteModel? route;
+  SaccoModel? sacco;
+  void getAllDetails() async {
+    driver = await getDriverById(widget.bus.driverId);
+    route = await getRouteById(widget.bus.routeId);
+    sacco = await getSaccoById(widget.bus.saccoId);
+  }
+
+  initState() {
+    getAllDetails();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Retrieve the related entities
-    final DriverModel driver = getDriverById(widget.bus.driverId);
-    final BusRouteModel route = getRouteById(widget.bus.routeId);
-    final SaccoModel? sacco = getSaccoById(widget.bus.saccoId);
 
     return Scaffold(
       appBar: AppBar(
@@ -50,41 +60,53 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: GestureDetector(
-              onTap: () {
-                // Navigate to BusRouteDetailsScreen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BusRouteDetailsScreen(route: route),
-                  ),
-                );
-              },
-              child: Text(
-                'Route: ${route.source} - ${route.destination}',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
+                onTap: () {
+                  // Navigate to BusRouteDetailsScreen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          BusRouteDetailsScreen(route: route!),
+                    ),
+                  );
+                },
+                child: route != null
+                    ? Text(
+                        'Route: ${route?.source} - ${route?.destination}',
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      )
+                    : const Text(
+                        'Route: Loading...',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      )),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: GestureDetector(
-              onTap: () {
-                // Navigate to SaccoDetailsScreen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SaccoDetailsScreen(sacco: sacco),
+          sacco != null
+              ? Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Navigate to SaccoDetailsScreen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SaccoDetailsScreen(sacco: sacco!),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Sacco: ${sacco!.name}',
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                );
-              },
-              child: Text(
-                'Sacco: ${sacco!.name}',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
+                )
+              : const Text(
+                  'Sacco: Loading...',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
           Padding(
             padding: const EdgeInsets.all(16),
             child: GestureDetector(
@@ -93,12 +115,12 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DriverDetailsScreen(driver: driver),
+                    builder: (context) => DriverDetailsScreen(driver: driver!),
                   ),
                 );
               },
               child: Text(
-                'Driver: ${driver.name}',
+                'Driver: ${driver!.name}',
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -124,23 +146,31 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
   }
 
   // Helper functions to retrieve related entities
-  DriverModel getDriverById(String driverId) {
-    // Replace this with your actual implementation
-    // Query the database or use any other logic to fetch the driver
-    // based on the driverId
-    return drivers.firstWhere((driver) => driver.driverId == driverId);
+  Future<DriverModel> getDriverById(String driverId) async {
+    DriverModel? driver;
+    //fetch drivers from firestore
+    await driversCollection.doc(driverId).get().then((value) {
+      setState(() {
+        driver = DriverModel.fromMap(value.data()!);
+      });
+    });
+    return driver!;
   }
 
-  BusRouteModel getRouteById(String routeId) {
-    // Replace this with your actual implementation
-    // Query the database or use any other logic to fetch the route
-    // based on the routeId
-    return busRoutes.firstWhere((route) => route.routeId == routeId);
+  Future<BusRouteModel?> getRouteById(String routeId) async {
+    BusRouteModel? route;
+    //fetch bus routes from firestore
+    await busRoutesCollection.doc(routeId).get().then((value) {
+      setState(() {
+        route = BusRouteModel.fromMap(value.data()!);
+      });
+    });
+    return route;
   }
 
-  SaccoModel? getSaccoById(String saccoId) {
+  Future<SaccoModel?> getSaccoById(String saccoId) async {
     SaccoModel? saccoModel;
-    saccoCollection.doc(saccoId).get().then((value) {
+    await saccoCollection.doc(saccoId).get().then((value) {
       setState(() {
         saccoModel = SaccoModel.fromMap(value.data()!);
       });

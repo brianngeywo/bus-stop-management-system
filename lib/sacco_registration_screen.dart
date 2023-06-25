@@ -174,7 +174,8 @@ class _SaccoRegistrationScreenState extends State<SaccoRegistrationScreen> {
                   activeDays: _activeDays,
                 );
                 // Save the new sacco to the firestore
-                saccoCollection.add(newSacco.toMap());
+                saccoCollection.doc(newSacco.saccoId).set(newSacco.toMap());
+
                 // show snackbar
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

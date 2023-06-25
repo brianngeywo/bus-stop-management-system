@@ -1,21 +1,41 @@
 import 'package:bus_sacco/bus_details_screen.dart';
+import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/models/bus_model.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/models/driver_model.dart';
-import 'package:bus_sacco/test_datas.dart';
 import 'package:flutter/material.dart';
 
-class DriverDetailsScreen extends StatelessWidget {
+class DriverDetailsScreen extends StatefulWidget {
   final DriverModel driver;
 
   DriverDetailsScreen({required this.driver});
 
   @override
-  Widget build(BuildContext context) {
-    // Retrieve the bus and route information related to the driver
-    List<BusModel> buses = getBusesByDriverId(driver.driverId);
-    List<BusRouteModel> routes = getRoutesByDriverId(driver.driverId);
+  State<DriverDetailsScreen> createState() => _DriverDetailsScreenState();
+}
 
+class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
+  // List<BusModel> buses = [];
+  BusRouteModel? _route;
+  void fetchDetails() async {
+    // buses = await getBusesByDriverId(widget.driver.driverId);
+    var route = await getRoutesByDriverId(widget.driver.driverId);
+    setState(() {
+      // buses = buses;
+      _route = route;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    // fetchDetails();
+    fetchDetails();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Driver Details'),
@@ -26,7 +46,7 @@ class DriverDetailsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Driver Name: ${driver.name}',
+              'Driver Name: ${widget.driver.name}',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -39,36 +59,32 @@ class DriverDetailsScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: buses.length,
-              itemBuilder: (context, index) {
-                final bus = buses[index];
-                final route =
-                    routes.firstWhere((route) => route.routeId == bus.routeId,
-                        orElse: () => BusRouteModel(
-                              routeId: '',
-                              source: 'N/A',
-                              destination: 'N/A',
-                              stops: [],
-                              fareRate: 0.0,
-                            ));
+            child: StreamBuilder<List<BusModel>>(
+                stream: busesStream(),
+                builder: (context, snapshot) {
+                  var _buses = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: _buses.length,
+                    itemBuilder: (context, index) {
+                      final bus = _buses[index];
 
-                return ListTile(
-                  title: Text('Bus NumberPlate: ${bus.numberPlate}'),
-                  subtitle:
-                      Text('Route: ${route.source} - ${route.destination}'),
-                  onTap: () {
-                    // Navigate to the bus details screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BusDetailsScreen(bus: bus),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+                      return ListTile(
+                        title: Text('Bus NumberPlate: ${bus.numberPlate}'),
+                        subtitle: Text(
+                            'Route: ${_route!.source} - ${_route!.destination}'),
+                        onTap: () {
+                          // Navigate to the bus details screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BusDetailsScreen(bus: bus),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                }),
           ),
         ],
       ),
@@ -76,23 +92,64 @@ class DriverDetailsScreen extends StatelessWidget {
   }
 
   // Helper functions to retrieve related bus and route information
-  List<BusModel> getBusesByDriverId(String driverId) {
-    // Replace this with your actual implementation
-    // Query the database or use any other logic to fetch the related buses
-    // based on the driverId
-    List<BusModel> relatedBuses =
-        buses.where((bus) => bus.driverId == driverId).toList();
-    return relatedBuses;
+  Future<List<BusModel>> getBusesByDriverId(String driverId) async {
+    List<BusModel> my_buses = [];
+    await busesCollection
+        .where('driverId', isEqualTo: driverId)
+        .limit(1)
+        .get()
+        .then(
+      (snapshot) {
+        for (var doc in snapshot.docs) {
+          setState(() {
+            my_buses.add(
+              BusModel(
+                busId: doc.id,
+                numberPlate: doc['numberPlate'],
+                routeId: doc['routeId'],
+                driverId: doc['driverId'],
+                saccoId: doc['saccoId'],
+              ),
+            );
+          });
+        }
+      },
+    );
+    return my_buses;
   }
 
-  List<BusRouteModel> getRoutesByDriverId(String driverId) {
-    // Replace this with your actual implementation
-    // Query the database or use any other logic to fetch the related routes
-    // based on the driverId
-    List<BusRouteModel> relatedRoutes = busRoutes
-        .where((route) => getBusesByDriverId(driverId)
-            .any((bus) => bus.routeId == route.routeId))
-        .toList();
-    return relatedRoutes;
+  Stream<List<BusModel>> busesStream() {
+    List<BusModel> buses = [];
+    return busesCollection
+        .where('driverId', isEqualTo: widget.driver.driverId)
+        .snapshots()
+        .map((snapshot) {
+      for (var document in snapshot.docs) {
+        setState(() {
+          buses.add(BusModel.fromMap(document.data()));
+        });
+      }
+      return buses;
+    });
+  }
+
+  //
+  Future<BusRouteModel?> getRoutesByDriverId(String driverId) async {
+    BusRouteModel? my_route;
+    List<BusModel> my_buses = await getBusesByDriverId(driverId);
+    // fetch buses from firestore
+    // for each bus, fetch the route from firestore
+    for (BusModel bus in my_buses) {
+      // fetch the route from firestore
+      await busRoutesCollection.doc(bus.routeId).get().then(
+        (doc) {
+          setState(() {
+            my_route = BusRouteModel.fromMap(doc.data()!);
+          });
+          return my_route;
+        },
+      );
+    }
+    return my_route;
   }
 }

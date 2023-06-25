@@ -15,6 +15,7 @@ class DashboardScreen extends StatelessWidget {
           padding: EdgeInsets.all(12.0),
           child: Text('TranspoLink Dashboard'),
         ),
+        automaticallyImplyLeading: false,
       ),
       body: Row(
         children: [

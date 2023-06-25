@@ -1,8 +1,11 @@
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/models/bus_model.dart';
-import 'package:bus_sacco/test_datas.dart';
+import 'package:bus_sacco/models/bus_route_model.dart';
+import 'package:bus_sacco/models/sacco_model.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+
+import 'models/driver_model.dart';
 
 class BusRegistrationScreen extends StatefulWidget {
   @override
@@ -15,6 +18,21 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
   String _selectedRouteId = '';
   String _selectedSaccoId = "";
   String _selectedDriverId = "";
+  List<BusRouteModel> busRoutes = [];
+  List<SaccoModel> saccos = [];
+  List<DriverModel> drivers = [];
+  void ferchAllData() async {
+    busRoutes = await fetchBusRoutes();
+    saccos = await fetchAllSaccos();
+    drivers = await fetchAllDrivers();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    ferchAllData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,5 +194,38 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
         },
       );
     }).toList();
+  }
+
+  Future<List<DriverModel>> fetchAllDrivers() async {
+    List<DriverModel> my_drivers = [];
+    final drivers = await driversCollection.get();
+    setState(() {
+      for (var driver in drivers.docs) {
+        my_drivers.add(DriverModel.fromMap(driver.data()));
+      }
+    });
+    return my_drivers;
+  }
+
+  Future<List<SaccoModel>> fetchAllSaccos() async {
+    List<SaccoModel> my_saccos = [];
+    final saccos = await saccoCollection.get();
+    setState(() {
+      saccos.docs.forEach((sacco) {
+        my_saccos.add(SaccoModel.fromMap(sacco.data()));
+      });
+    });
+    return my_saccos;
+  }
+
+  Future<List<BusRouteModel>> fetchBusRoutes() async {
+    List<BusRouteModel> busRoutes = [];
+    final routes = await busRoutesCollection.get();
+    setState(() {
+      routes.docs.forEach((route) {
+        busRoutes.add(BusRouteModel.fromMap(route.data()));
+      });
+    });
+    return busRoutes;
   }
 }

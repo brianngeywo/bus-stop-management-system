@@ -15,9 +15,11 @@ class _DriversScreenState extends State<DriversScreen> {
   Stream<List<DriverModel>> _driversStream() {
     return driversCollection.snapshots().map((snapshot) {
       List<DriverModel> drivers = [];
-      snapshot.docs.forEach((document) {
-        drivers.add(DriverModel.fromMap(document.data()));
-      });
+      for (var document in snapshot.docs) {
+        setState(() {
+          drivers.add(DriverModel.fromMap(document.data()));
+        });
+      }
       return drivers;
     });
   }
@@ -48,13 +50,13 @@ class _DriversScreenState extends State<DriversScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Drivers'),
+        title: const Text('Drivers'),
       ),
       body: StreamBuilder<List<DriverModel>>(
         stream: _driversStream(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text('An error occurred'),
             );
           }

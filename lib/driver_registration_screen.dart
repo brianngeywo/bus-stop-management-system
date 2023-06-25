@@ -1,7 +1,6 @@
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
-import 'package:bus_sacco/test_datas.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,6 +14,13 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
   String _name = '';
   String _contactInfo = '';
   SaccoModel? _selectedSacco;
+  List<SaccoModel> saccos = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    saccos = getAllSaccosFromFirestore();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,5 +112,17 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
         ),
       ),
     );
+  }
+
+  List<SaccoModel> getAllSaccosFromFirestore() {
+    saccoCollection.get().then((snapshot) {
+      snapshot.docs.forEach((doc) {
+        final sacco = SaccoModel.fromMap(doc.data());
+        setState(() {
+          saccos.add(sacco);
+        });
+      });
+    });
+    return saccos;
   }
 }
