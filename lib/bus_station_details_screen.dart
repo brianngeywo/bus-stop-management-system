@@ -1,9 +1,12 @@
 import 'package:bus_sacco/constants.dart';
+import 'package:bus_sacco/dashboard_item_tile.dart';
 import 'package:bus_sacco/models/bus_station.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
 import 'package:bus_sacco/sacco_details_screen.dart';
 import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
+
+import 'main_app_bar.dart';
 
 class BusStationDetailsScreen extends StatefulWidget {
   final BusStationModel busStation;
@@ -32,54 +35,65 @@ class _BusStationDetailsScreenState extends State<BusStationDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.busStation.name),
-      ),
+      appBar: mainAppBar(widget.busStation.name),
       body: Row(
         children: [
           const MySidebar(),
           Expanded(
             flex: 4,
-            child: Column(
-              children: [
-                Text(widget.busStation.name,
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 20),
-                ListTile(
-                  title: const Text('Location'),
-                  subtitle: Text(widget.busStation.location),
-                ),
-                const SizedBox(height: 20),
-                const Text('Listed Saccos',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                StreamBuilder<List<SaccoModel>>(
-                    stream: saccoStream(widget.busStation.saccoIds),
-                    builder: (context, snapshot) {
-                      var saccos = snapshot.data!;
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: saccos.length,
-                        itemBuilder: (context, index) {
-                          SaccoModel sacco = saccos[index];
-                          return ListTile(
-                            title: Text(sacco.name),
-                            subtitle: Text(sacco.location),
-                            trailing: Text(sacco.phoneNumber),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          SaccoDetailsScreen(sacco: sacco)));
-                            },
-                          );
-                        },
-                      );
-                    }),
-              ],
+            child: Container(
+              color: Colors.grey[200],
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(widget.busStation.name,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 20),
+                  ListTile(
+                    title: const Text('Location'),
+                    subtitle: Text(widget.busStation.location),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text('Listed Saccos',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  StreamBuilder<List<SaccoModel>>(
+                      stream: saccoStream(widget.busStation.saccoIds),
+                      builder: (context, snapshot) {
+                        var saccos = snapshot.data!;
+                        return GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4),
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: saccos.length,
+                          itemBuilder: (context, index) {
+                            SaccoModel sacco = saccos[index];
+                            return DashboardTile(
+                              title: sacco.name,
+                              // subtitle: Text(sacco.location),
+                              // trailing: Text(sacco.phoneNumber),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            SaccoDetailsScreen(sacco: sacco)));
+                              },
+                            );
+                          },
+                        );
+                      }),
+                ],
+              ),
             ),
           ),
         ],

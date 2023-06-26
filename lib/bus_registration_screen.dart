@@ -1,4 +1,5 @@
 import 'package:bus_sacco/constants.dart';
+import 'package:bus_sacco/main_app_bar.dart';
 import 'package:bus_sacco/models/bus_model.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
@@ -38,16 +39,15 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bus Registration'),
-      ),
+      appBar: mainAppBar('Bus Registration'),
       body: Row(
         children: [
-          MySidebar(),
+          const MySidebar(),
           Expanded(
             flex: 4,
-            child: Padding(
+            child: Container(
               padding: const EdgeInsets.all(16.0),
+              color: Colors.grey[200],
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -56,7 +56,9 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
                     style:
                         TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 24.0),
+                  const SizedBox(height: 8.0),
+                  const Divider(),
+                  const SizedBox(height: 8.0),
                   const Text(
                     'Number Plate',
                     style:
@@ -109,6 +111,9 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
                   ),
                   const SizedBox(height: 24.0),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.cyan[900],
+                    ),
                     onPressed: () {
                       // Create new bus object
                       final bus = BusModel(
@@ -143,7 +148,11 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
                         ),
                       );
                     },
-                    child: const Text('Register Bus'),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('Register Bus',
+                          style: TextStyle(color: Colors.white)),
+                    ),
                   ),
                 ],
               ),
@@ -158,8 +167,12 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
     return busRoutes.map((route) {
       final isSelected = _selectedRouteId == route.routeId;
       return ChoiceChip(
-        label: Text(route.source + ' - ' + route.destination),
-        selectedColor: Colors.blueAccent,
+        label: Text(
+          route.source + ' - ' + route.destination,
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blue,
+        selectedColor: Colors.cyan[900],
         selected: isSelected,
         onSelected: (selected) {
           setState(() {
@@ -178,8 +191,9 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
     return saccos.map((sacco) {
       final isSelected = _selectedSaccoId == sacco.saccoId;
       return ChoiceChip(
-        label: Text(sacco.name),
-        selectedColor: Colors.blueAccent,
+        label: Text(sacco.name, style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blue,
+        selectedColor: Colors.cyan[900],
         selected: isSelected,
         onSelected: (selected) {
           setState(() {
@@ -198,8 +212,12 @@ class _BusRegistrationScreenState extends State<BusRegistrationScreen> {
     return drivers.map((driver) {
       final isSelected = _selectedDriverId == driver.driverId;
       return ChoiceChip(
-        label: Text('Driver ${driver.name}'),
-        selectedColor: Colors.blueAccent,
+        label: Text(
+          'Driver ${driver.name}',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blue,
+        selectedColor: Colors.cyan[900],
         selected: isSelected,
         onSelected: (selected) {
           setState(() {

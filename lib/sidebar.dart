@@ -105,14 +105,15 @@ class _MySidebarState extends State<MySidebar> {
             ),
             const Divider(),
             ListTile(
-              leading: const Icon(Icons.location_on, color: Colors.white),
-              title: const Text('Register Bus Station',
+              // add appropriate icon according to the registration item
+              leading: const Icon(Icons.map, color: Colors.white),
+              title: const Text('Register Bus Route',
                   style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => BusStationRegistrationScreen()));
+                        builder: (context) => BusRouteRegistrationScreen()));
               },
             ),
             ListTile(
@@ -127,17 +128,6 @@ class _MySidebarState extends State<MySidebar> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.directions_bus, color: Colors.white),
-              title: const Text('Register Bus',
-                  style: TextStyle(color: Colors.white)),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => BusRegistrationScreen()));
-              },
-            ),
-            ListTile(
               leading: const Icon(Icons.person, color: Colors.white),
               title: const Text('Register Driver',
                   style: TextStyle(color: Colors.white)),
@@ -149,15 +139,25 @@ class _MySidebarState extends State<MySidebar> {
               },
             ),
             ListTile(
-              // add appropriate icon according to the registration item
-              leading: const Icon(Icons.map, color: Colors.white),
-              title: const Text('Register Bus Route',
+              leading: const Icon(Icons.directions_bus, color: Colors.white),
+              title: const Text('Register Bus',
                   style: TextStyle(color: Colors.white)),
               onTap: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => BusRouteRegistrationScreen()));
+                        builder: (context) => BusRegistrationScreen()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.location_on, color: Colors.white),
+              title: const Text('Register Bus Station',
+                  style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BusStationRegistrationScreen()));
               },
             ),
           ],

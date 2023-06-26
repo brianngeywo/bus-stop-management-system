@@ -1,6 +1,7 @@
 import 'package:bus_sacco/bus_route_details_screen.dart';
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/driver_details_screen.dart';
+import 'package:bus_sacco/main_app_bar.dart';
 import 'package:bus_sacco/models/bus_model.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/models/driver_model.dart';
@@ -38,27 +39,27 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
     // Retrieve the related entities
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bus Details'),
-      ),
+      appBar: mainAppBar('Bus Details'),
       body: Row(
         children: [
           const MySidebar(),
           Expanded(
             flex: 4,
-            child: ListView(
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    'Driver details',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            child: Container(
+              color: Colors.grey[200],
+              padding: const EdgeInsets.all(16),
+              child: ListView(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      'Driver details',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: ListTile(
+                  ListTile(
                     onTap: () {
                       // Navigate to DriverDetailsScreen
                       Navigator.push(
@@ -76,37 +77,34 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                       ),
                     ),
                   ),
-                ),
-                const Divider(),
-                const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    'Number Plate',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  const Divider(),
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      'Number Plate',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    widget.bus.numberPlate,
-                    style: const TextStyle(
-                      fontSize: 18,
+                  ListTile(
+                    title: Text(
+                      widget.bus.numberPlate,
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
                   ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    'Bus route',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      'Bus route',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: GestureDetector(
+                  ListTile(
                       onTap: () {
                         // Navigate to BusRouteDetailsScreen
                         Navigator.push(
@@ -117,7 +115,7 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                           ),
                         );
                       },
-                      child: route != null
+                      title: route != null
                           ? Text(
                               '${route?.source} - ${route?.destination}',
                               style: const TextStyle(
@@ -130,18 +128,16 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                                 fontSize: 18,
                               ),
                             )),
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    'Sacco Details',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      'Sacco Details',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                sacco != null
-                    ? Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: ListTile(
+                  sacco != null
+                      ? ListTile(
                           onTap: () {
                             // Navigate to SaccoDetailsScreen
                             Navigator.push(
@@ -164,24 +160,22 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                               fontSize: 18,
                             ),
                           ),
+                        )
+                      : const Text(
+                          'Loading...',
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
                         ),
-                      )
-                    : const Text(
-                        'Loading...',
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
-                const Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    'Bus Status',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      'Bus Status',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
+                  Text(
                     widget.bus.hasLeftSource == true
                         ? 'The bus has already left the station'
                         : 'The bus is yet to leave the station',
@@ -189,23 +183,23 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                       fontSize: 18,
                     ),
                   ),
-                ),
-                Padding(
-                  padding:
-                      EdgeInsets.all(widget.bus.hasLeftSource == true ? 16 : 0),
-                  child: Text(
-                    widget.bus.hasLeftSource != true
-                        ? ''
-                        : widget.bus.hasArrivedDestination
-                            ? "Bus has arrived"
-                                " at destination"
-                            : 'Bus has not arrived at destination',
-                    style: const TextStyle(
-                      fontSize: 18,
+                  Padding(
+                    padding: EdgeInsets.all(
+                        widget.bus.hasLeftSource == true ? 16 : 0),
+                    child: Text(
+                      widget.bus.hasLeftSource != true
+                          ? ''
+                          : widget.bus.hasArrivedDestination
+                              ? "Bus has arrived"
+                                  " at destination"
+                              : 'Bus has not arrived at destination',
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

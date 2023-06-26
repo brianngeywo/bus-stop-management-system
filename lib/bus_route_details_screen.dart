@@ -1,4 +1,5 @@
 import 'package:bus_sacco/constants.dart';
+import 'package:bus_sacco/main_app_bar.dart';
 import 'package:bus_sacco/models/bus_model.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/models/driver_model.dart';
@@ -34,35 +35,37 @@ class _BusRouteDetailsScreenState extends State<BusRouteDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.route.source + ' - ' + widget.route.destination),
-      ),
+      appBar:
+          mainAppBar(widget.route.source + ' - ' + widget.route.destination),
       body: Row(
         children: [
           const MySidebar(),
           Expanded(
             flex: 4,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 28.0, vertical: 16),
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  Text(
-                    '${widget.route.source} - ${widget.route.destination} Route Details',
-                    style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildRouteDetail('Source', widget.route.source),
-                  _buildRouteDetail('Destination', widget.route.destination),
-                  _buildRouteDetail('Stops', widget.route.stops.join(', ')),
-                  _buildRouteDetail(
-                      'Fare Price', widget.route.fareRate.toString()),
-                  const SizedBox(height: 16),
-                  _buildSectionHeader('Buses in the route'),
-                  _buildBusList(),
-                ],
+            child: Container(
+              color: Colors.grey[200],
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 28.0, vertical: 16),
+                child: ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    Text(
+                      '${widget.route.source} - ${widget.route.destination} Route Details',
+                      style: const TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildRouteDetail('Source', widget.route.source),
+                    _buildRouteDetail('Destination', widget.route.destination),
+                    _buildRouteDetail('Stops', widget.route.stops.join(', ')),
+                    _buildRouteDetail(
+                        'Fare Price', widget.route.fareRate.toString()),
+                    const SizedBox(height: 16),
+                    _buildSectionHeader('Buses in the route'),
+                    _buildBusList(),
+                  ],
+                ),
               ),
             ),
           ),

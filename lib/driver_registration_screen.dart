@@ -5,6 +5,8 @@ import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+import 'main_app_bar.dart';
+
 class DriverRegistrationScreen extends StatefulWidget {
   @override
   _DriverRegistrationScreenState createState() =>
@@ -26,12 +28,14 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: mainAppBar('Driver Registration'),
       body: Row(
         children: [
           const MySidebar(),
           Expanded(
             flex: 4,
-            child: Padding(
+            child: Container(
+              color: Colors.grey[200],
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +45,9 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
                     style:
                         TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 8.0),
+                  const Divider(),
+                  const SizedBox(height: 8.0),
                   const Text(
                     'Name',
                     style:
@@ -100,6 +106,13 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
                   ),
                   const SizedBox(height: 24.0),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.cyan[900],
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32.0,
+                        vertical: 16.0,
+                      ),
+                    ),
                     onPressed: () {
                       // Save the Driver details and navigate to the next screen
                       // or perform any desired action
@@ -123,7 +136,15 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
                         );
                       }
                     },
-                    child: const Text('Register Driver'),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'Register Driver',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

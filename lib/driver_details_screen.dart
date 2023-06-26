@@ -45,75 +45,82 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
           const MySidebar(),
           Expanded(
             flex: 4,
-            child: ListView(
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    'Name',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    widget.driver.name,
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text('Contact Info',
+            child: Container(
+              color: Colors.grey[200],
+              padding: const EdgeInsets.all(16),
+              child: ListView(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      'Name',
                       style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(widget.driver.contactInfo),
-                ),
-                const Divider(),
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    'Assigned Buses',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                StreamBuilder<List<BusModel>>(
-                    stream: busesStream(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        var buses = snapshot.data!;
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: buses.length,
-                          itemBuilder: (context, index) {
-                            var bus = buses[index];
-                            return ListTile(
-                              title: Text(bus.numberPlate),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => BusDetailsScreen(
-                                      bus: bus,
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      widget.driver.name,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text('Contact Info',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(widget.driver.contactInfo),
+                  ),
+                  const Divider(),
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                      'Assigned Buses',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  StreamBuilder<List<BusModel>>(
+                      stream: busesStream(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          var buses = snapshot.data!;
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: buses.length,
+                            itemBuilder: (context, index) {
+                              var bus = buses[index];
+                              return ListTile(
+                                title: Text(bus.numberPlate),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BusDetailsScreen(
+                                        bus: bus,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        );
-                      } else {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                    }),
-              ],
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      }),
+                ],
+              ),
             ),
           ),
         ],

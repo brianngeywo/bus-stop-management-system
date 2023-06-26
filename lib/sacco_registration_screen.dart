@@ -4,6 +4,8 @@ import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+import 'main_app_bar.dart';
+
 class SaccoRegistrationScreen extends StatefulWidget {
   @override
   _SaccoRegistrationScreenState createState() =>
@@ -33,19 +35,26 @@ class _SaccoRegistrationScreenState extends State<SaccoRegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sacco Registration'),
-      ),
+      appBar: mainAppBar('Sacco Registration'),
       body: Row(
         children: [
-          MySidebar(),
+          const MySidebar(),
           Expanded(
             flex: 4,
-            child: Padding(
+            child: Container(
+              color: Colors.grey[200],
               padding: const EdgeInsets.all(16.0),
               child: ListView(
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    'Sacco Registration Form',
+                    style:
+                        TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8.0),
+                  Divider(),
+                  const SizedBox(height: 8.0),
                   const Text(
                     'Name',
                     style:
@@ -173,10 +182,17 @@ class _SaccoRegistrationScreenState extends State<SaccoRegistrationScreen> {
                   ),
                   const SizedBox(height: 24.0),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.cyan[900],
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32.0,
+                        vertical: 16.0,
+                      ),
+                    ),
                     onPressed: () {
                       // Create a new SaccoModel instance and save the details
                       SaccoModel newSacco = SaccoModel(
-                        saccoId: Uuid().v4(),
+                        saccoId: const Uuid().v4(),
                         name: _name,
                         location: _location,
                         phoneNumber: _phoneNumber,
@@ -208,7 +224,13 @@ class _SaccoRegistrationScreenState extends State<SaccoRegistrationScreen> {
                         _activeDays = [];
                       });
                     },
-                    child: const Text('Register Sacco'),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'Register Sacco',
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
+                      ),
+                    ),
                   ),
                 ],
               ),

@@ -1,9 +1,11 @@
+import 'package:bus_sacco/dashboard_item_tile.dart';
 import 'package:bus_sacco/driver_details_screen.dart';
 import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
+import 'main_app_bar.dart';
 
 class DriversScreen extends StatefulWidget {
   @override
@@ -50,48 +52,53 @@ class _DriversScreenState extends State<DriversScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Drivers List'),
-      ),
+      appBar: mainAppBar('Drivers List'),
       body: Row(
         children: [
           MySidebar(),
           Expanded(
             flex: 4,
-            child: StreamBuilder<List<DriverModel>>(
-              stream: _driversStream(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Center(
-                    child: Text('An error occurred'),
-                  );
-                }
-                if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DriverDetailsScreen(
-                                driver: snapshot.data![index],
+            child: Container(
+              color: Colors.grey[200],
+              padding: const EdgeInsets.all(16),
+              child: StreamBuilder<List<DriverModel>>(
+                stream: _driversStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('An error occurred'),
+                    );
+                  }
+                  if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    return GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                      ),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return DashboardTile(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DriverDetailsScreen(
+                                  driver: snapshot.data![index],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        title: Text(snapshot.data![index].name),
-                        subtitle: Text(snapshot.data![index].contactInfo),
-                      );
-                    },
-                  );
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
+                            );
+                          },
+                          title: snapshot.data![index].name,
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
             ),
           ),
         ],

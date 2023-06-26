@@ -8,6 +8,8 @@ import 'package:bus_sacco/models/sacco_model.dart';
 import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 
+import 'main_app_bar.dart';
+
 class SaccoDetailsScreen extends StatefulWidget {
   final SaccoModel sacco;
 
@@ -30,202 +32,207 @@ class _SaccoDetailsScreenState extends State<SaccoDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sacco Details'),
-      ),
+      appBar: mainAppBar(widget.sacco.name + ' Details'),
       body: Row(
         children: [
           const MySidebar(),
           Expanded(
             flex: 4,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Sacco Name',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+            child: Container(
+              color: Colors.grey[200],
+              padding: const EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Sacco Name',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    widget.sacco.name,
-                    style: const TextStyle(fontSize: 16.0),
-                  ),
-                  const SizedBox(height: 16.0),
-                  const Text(
-                    'Contact Information',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 8.0),
+                    Text(
+                      widget.sacco.name,
+                      style: const TextStyle(fontSize: 16.0),
                     ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Text(
-                    widget.sacco.phoneNumber,
-                    style: const TextStyle(fontSize: 16.0),
-                  ),
-                  Text(
-                    widget.sacco.emailAdress,
-                    style: const TextStyle(fontSize: 16.0),
-                  ),
-                  const SizedBox(height: 24.0),
-                  const Text(
-                    'Days of operations',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 16.0),
+                    const Text(
+                      'Contact Information',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: widget.sacco.activeDays.length,
-                    itemBuilder: (context, index) {
-                      var day = widget.sacco.activeDays[index];
-                      return ListTile(
-                        title: Text(day),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 24.0),
-                  const Text(
-                    'List of Drivers',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 8.0),
+                    Text(
+                      widget.sacco.phoneNumber,
+                      style: const TextStyle(fontSize: 16.0),
                     ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  StreamBuilder<List<DriverModel>>(
-                      stream: getDriversBySaccoIdStream(widget.sacco.saccoId),
-                      builder: (context, snapshot) {
-                        if (snapshot.data!.isEmpty) {
-                          return const Center(
-                            child: Text('No drivers found'),
-                          );
-                        }
-                        if (snapshot.hasError) {
-                          return const Center(
-                            child: Text('An error occurred'),
-                          );
-                        }
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        if (snapshot.connectionState == ConnectionState.none) {
-                          return const Center(
-                            child: Text('No drivers found'),
-                          );
-                        }
-                        if (snapshot.hasData) {
-                          var drivers = snapshot.data!;
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: drivers.length,
-                            itemBuilder: (context, index) {
-                              DriverModel driver = drivers[index];
-                              return ListTile(
-                                title: Text(driver.name),
-                                subtitle: Text(driver.contactInfo),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          DriverDetailsScreen(driver: driver),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          );
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                    Text(
+                      widget.sacco.emailAdress,
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                    const SizedBox(height: 24.0),
+                    const Text(
+                      'Days of operations',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: widget.sacco.activeDays.length,
+                      itemBuilder: (context, index) {
+                        var day = widget.sacco.activeDays[index];
+                        return ListTile(
+                          title: Text(day),
                         );
-                      }),
-                  const SizedBox(height: 24.0),
-                  const Text(
-                    'List of Buses',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                      },
                     ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  StreamBuilder<List<BusModel>>(
-                      stream: getBusesBySaccoIdStream(widget.sacco.saccoId),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
+                    const SizedBox(height: 24.0),
+                    const Text(
+                      'List of Drivers',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    StreamBuilder<List<DriverModel>>(
+                        stream: getDriversBySaccoIdStream(widget.sacco.saccoId),
+                        builder: (context, snapshot) {
+                          if (snapshot.data!.isEmpty) {
+                            return const Center(
+                              child: Text('No drivers found'),
+                            );
+                          }
+                          if (snapshot.hasError) {
+                            return const Center(
+                              child: Text('An error occurred'),
+                            );
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.none) {
+                            return const Center(
+                              child: Text('No drivers found'),
+                            );
+                          }
+                          if (snapshot.hasData) {
+                            var drivers = snapshot.data!;
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: drivers.length,
+                              itemBuilder: (context, index) {
+                                DriverModel driver = drivers[index];
+                                return ListTile(
+                                  title: Text(driver.name),
+                                  subtitle: Text(driver.contactInfo),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            DriverDetailsScreen(driver: driver),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          }
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
-                        }
-                        if (snapshot.data!.isEmpty) {
-                          return const Center(
-                            child: Text('No buses found'),
-                          );
-                        }
-                        if (snapshot.hasError) {
-                          return const Center(
-                            child: Text('An error occurred'),
-                          );
-                        }
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
+                        }),
+                    const SizedBox(height: 24.0),
+                    const Text(
+                      'List of Buses',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    StreamBuilder<List<BusModel>>(
+                        stream: getBusesBySaccoIdStream(widget.sacco.saccoId),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          if (snapshot.data!.isEmpty) {
+                            return const Center(
+                              child: Text('No buses found'),
+                            );
+                          }
+                          if (snapshot.hasError) {
+                            return const Center(
+                              child: Text('An error occurred'),
+                            );
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.none) {
+                            return const Center(
+                              child: Text('No buses found'),
+                            );
+                          }
+                          if (snapshot.data!.isEmpty) {
+                            return const Center(
+                              child: Text('No buses found'),
+                            );
+                          }
+                          if (snapshot.hasData) {
+                            var buses = snapshot.data!;
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: buses.length,
+                              itemBuilder: (context, index) {
+                                BusModel bus = buses[index];
+                                return ListTile(
+                                  title: const Text('Bus Number Plate'),
+                                  subtitle: Text(bus.numberPlate),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            BusDetailsScreen(bus: bus),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          }
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
-                        }
-                        if (snapshot.connectionState == ConnectionState.none) {
-                          return const Center(
-                            child: Text('No buses found'),
-                          );
-                        }
-                        if (snapshot.data!.isEmpty) {
-                          return const Center(
-                            child: Text('No buses found'),
-                          );
-                        }
-                        if (snapshot.hasData) {
-                          var buses = snapshot.data!;
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: buses.length,
-                            itemBuilder: (context, index) {
-                              BusModel bus = buses[index];
-                              return ListTile(
-                                title: const Text('Bus Number Plate'),
-                                subtitle: Text(bus.numberPlate),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          BusDetailsScreen(bus: bus),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          );
-                        }
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }),
-                  const SizedBox(height: 24.0),
-                ],
+                        }),
+                    const SizedBox(height: 24.0),
+                  ],
+                ),
               ),
             ),
           ),
