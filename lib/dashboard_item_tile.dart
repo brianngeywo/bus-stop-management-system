@@ -16,6 +16,7 @@ class DashboardTile extends StatelessWidget {
       child: InkWell(
         onTap: onPressed,
         child: Card(
+          color: Colors.white,
           child: Center(
             child: Text(title),
           ),

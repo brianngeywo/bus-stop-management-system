@@ -1,5 +1,6 @@
 import 'package:bus_sacco/bus_route_details_screen.dart';
 import 'package:bus_sacco/constants.dart';
+import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 
 import 'models/bus_route_model.dart';
@@ -26,59 +27,68 @@ class _BusRoutesScreenState extends State<BusRoutesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bus Routes'),
+        title: const Text('Bus Routes'),
       ),
-      body: StreamBuilder<List<BusRouteModel>>(
-        stream: busRoutesCollection.snapshots().map((snapshot) {
-          List<BusRouteModel> routes = [];
-          snapshot.docs.forEach((element) {
-            routes.add(BusRouteModel.fromMap(element.data()));
-          });
-          return routes;
-        }),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('Something went wrong'),
-            );
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text('No bus routes found'),
-            );
-          }
-          if (snapshot.data!.length > 0) {
-            var routes = snapshot.data!;
-            return ListView.builder(
-              itemCount: routes.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(
-                      routes[index].source + ' - ' + routes[index].destination),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BusRouteDetailsScreen(
-                          route: snapshot.data![index],
-                        ),
-                      ),
-                    );
-                  },
+      body: Row(
+        children: [
+          const MySidebar(),
+          Expanded(
+            flex: 4,
+            child: StreamBuilder<List<BusRouteModel>>(
+              stream: busRoutesCollection.snapshots().map((snapshot) {
+                List<BusRouteModel> routes = [];
+                snapshot.docs.forEach((element) {
+                  routes.add(BusRouteModel.fromMap(element.data()));
+                });
+                return routes;
+              }),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('Something went wrong'),
+                  );
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (snapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Text('No bus routes found'),
+                  );
+                }
+                if (snapshot.data!.length > 0) {
+                  var routes = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: routes.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(routes[index].source +
+                            ' - ' +
+                            routes[index].destination),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BusRouteDetailsScreen(
+                                route: snapshot.data![index],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                }
+
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
               },
-            );
-          }
-
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
+            ),
+          ),
+        ],
       ),
     );
   }

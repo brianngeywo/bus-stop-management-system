@@ -1,6 +1,7 @@
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
 import 'package:bus_sacco/sacco_details_screen.dart';
+import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 
 class SaccosScreen extends StatefulWidget {
@@ -33,52 +34,60 @@ class _SaccosScreenState extends State<SaccosScreen> {
       appBar: AppBar(
         title: const Text('Saccos'),
       ),
-      body: StreamBuilder<List<SaccoModel>>(
-          stream: _fetchSaccosFromFirestore(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const Center(
-                child: Text('Something went wrong'),
-              );
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (snapshot.data == null || snapshot.data!.isEmpty) {
-              return const Center(
-                child: Text('No data found'),
-              );
-            }
-            if (snapshot.hasData) {
-              List<SaccoModel> fetchedSaccos = snapshot.data ?? [];
-              return ListView.builder(
-                itemCount: fetchedSaccos.length,
-                itemBuilder: (context, index) {
-                  SaccoModel _sacco = fetchedSaccos[index];
-                  return ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SaccoDetailsScreen(
-                            sacco: _sacco,
-                          ),
-                        ),
-                      );
-                    },
-                    title: Text(_sacco.name),
-                    subtitle: Text(_sacco.location),
-                  );
-                },
-              );
-            }
+      body: Row(
+        children: [
+          MySidebar(),
+          Expanded(
+            flex: 4,
+            child: StreamBuilder<List<SaccoModel>>(
+                stream: _fetchSaccosFromFirestore(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Something went wrong'),
+                    );
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (snapshot.data == null || snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text('No data found'),
+                    );
+                  }
+                  if (snapshot.hasData) {
+                    List<SaccoModel> fetchedSaccos = snapshot.data ?? [];
+                    return ListView.builder(
+                      itemCount: fetchedSaccos.length,
+                      itemBuilder: (context, index) {
+                        SaccoModel _sacco = fetchedSaccos[index];
+                        return ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SaccoDetailsScreen(
+                                  sacco: _sacco,
+                                ),
+                              ),
+                            );
+                          },
+                          title: Text(_sacco.name),
+                          subtitle: Text(_sacco.location),
+                        );
+                      },
+                    );
+                  }
 
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }),
+          ),
+        ],
+      ),
     );
   }
 }

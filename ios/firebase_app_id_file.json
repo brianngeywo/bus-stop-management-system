@@ -1,7 +1,7 @@
 {
   "file_generated_by": "FlutterFire CLI",
   "purpose": "FirebaseAppID & ProjectID for this Firebase app in this directory",
-  "GOOGLE_APP_ID": "1:799713432632:ios:876947349d9df53a1982cd",
-  "FIREBASE_PROJECT_ID": "bus-management-sysem",
-  "GCM_SENDER_ID": "799713432632"
+  "GOOGLE_APP_ID": "1:800408495477:ios:4ffb1d7378db0237995f3c",
+  "FIREBASE_PROJECT_ID": "transpolink-management-system",
+  "GCM_SENDER_ID": "800408495477"
 }

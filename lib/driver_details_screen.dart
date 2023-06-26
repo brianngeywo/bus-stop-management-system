@@ -1,8 +1,10 @@
 import 'package:bus_sacco/bus_details_screen.dart';
 import 'package:bus_sacco/constants.dart';
+import 'package:bus_sacco/main_app_bar.dart';
 import 'package:bus_sacco/models/bus_model.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/models/driver_model.dart';
+import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 
 class DriverDetailsScreen extends StatefulWidget {
@@ -37,54 +39,82 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Driver Details'),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: mainAppBar('Driver Details'),
+      body: Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Driver Name: ${widget.driver.name}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const Divider(),
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              'Assigned Buses:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
+          const MySidebar(),
           Expanded(
-            child: StreamBuilder<List<BusModel>>(
-                stream: busesStream(),
-                builder: (context, snapshot) {
-                  var _buses = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: _buses.length,
-                    itemBuilder: (context, index) {
-                      final bus = _buses[index];
-
-                      return ListTile(
-                        title: Text('Bus NumberPlate: ${bus.numberPlate}'),
-                        subtitle: Text(
-                            'Route: ${_route!.source} - ${_route!.destination}'),
-                        onTap: () {
-                          // Navigate to the bus details screen
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BusDetailsScreen(bus: bus),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                }),
+            flex: 4,
+            child: ListView(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'Name',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    widget.driver.name,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text('Contact Info',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(widget.driver.contactInfo),
+                ),
+                const Divider(),
+                const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'Assigned Buses',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                StreamBuilder<List<BusModel>>(
+                    stream: busesStream(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        var buses = snapshot.data!;
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: buses.length,
+                          itemBuilder: (context, index) {
+                            var bus = buses[index];
+                            return ListTile(
+                              title: Text(bus.numberPlate),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BusDetailsScreen(
+                                      bus: bus,
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        );
+                      } else {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    }),
+              ],
+            ),
           ),
         ],
       ),
@@ -123,14 +153,9 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
     return busesCollection
         .where('driverId', isEqualTo: widget.driver.driverId)
         .snapshots()
-        .map((snapshot) {
-      for (var document in snapshot.docs) {
-        setState(() {
-          buses.add(BusModel.fromMap(document.data()));
-        });
-      }
-      return buses;
-    });
+        .map((querySnapshot) => querySnapshot.docs
+            .map((doc) => BusModel.fromMap(doc.data()))
+            .toList());
   }
 
   //

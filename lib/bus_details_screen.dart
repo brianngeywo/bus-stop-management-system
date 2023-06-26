@@ -6,6 +6,7 @@ import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
 import 'package:bus_sacco/sacco_details_screen.dart';
+import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 
 class BusDetailsScreen extends StatefulWidget {
@@ -40,104 +41,171 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
       appBar: AppBar(
         title: const Text('Bus Details'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'Bus ID: ${widget.bus.busId}',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'Number Plate: ${widget.bus.numberPlate}',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: GestureDetector(
-                onTap: () {
-                  // Navigate to BusRouteDetailsScreen
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          BusRouteDetailsScreen(route: route!),
-                    ),
-                  );
-                },
-                child: route != null
-                    ? Text(
-                        'Route: ${route?.source} - ${route?.destination}',
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      )
-                    : const Text(
-                        'Route: Loading...',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      )),
-          ),
-          sacco != null
-              ? Padding(
+          const MySidebar(),
+          Expanded(
+            flex: 4,
+            child: ListView(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'Driver details',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.all(16),
-                  child: GestureDetector(
+                  child: ListTile(
                     onTap: () {
-                      // Navigate to SaccoDetailsScreen
+                      // Navigate to DriverDetailsScreen
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              SaccoDetailsScreen(sacco: sacco!),
+                              DriverDetailsScreen(driver: driver!),
                         ),
                       );
                     },
-                    child: Text(
-                      'Sacco: ${sacco!.name}',
+                    title: Text(
+                      driver != null ? driver!.name : 'Loading...',
                       style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
+                        fontSize: 18,
+                      ),
                     ),
                   ),
-                )
-              : const Text(
-                  'Sacco: Loading...',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: GestureDetector(
-              onTap: () {
-                // Navigate to DriverDetailsScreen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DriverDetailsScreen(driver: driver!),
+                const Divider(),
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'Number Plate',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                );
-              },
-              child: Text(
-                'Driver: ${driver!.name}',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'Has Left Source: ${widget.bus.hasLeftSource}',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'Has Arrived at Destination: ${widget.bus.hasArrivedDestination}',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    widget.bus.numberPlate,
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'Bus route',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: GestureDetector(
+                      onTap: () {
+                        // Navigate to BusRouteDetailsScreen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                BusRouteDetailsScreen(route: route!),
+                          ),
+                        );
+                      },
+                      child: route != null
+                          ? Text(
+                              '${route?.source} - ${route?.destination}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                              ),
+                            )
+                          : const Text(
+                              'Loading...',
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                            )),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'Sacco Details',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                sacco != null
+                    ? Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: ListTile(
+                          onTap: () {
+                            // Navigate to SaccoDetailsScreen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    SaccoDetailsScreen(sacco: sacco!),
+                              ),
+                            );
+                          },
+                          title: Text(
+                            sacco!.name,
+                            style: const TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                          subtitle: Text(
+                            sacco!.location,
+                            style: const TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      )
+                    : const Text(
+                        'Loading...',
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'Bus Status',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    widget.bus.hasLeftSource == true
+                        ? 'The bus has already left the station'
+                        : 'The bus is yet to leave the station',
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.all(widget.bus.hasLeftSource == true ? 16 : 0),
+                  child: Text(
+                    widget.bus.hasLeftSource != true
+                        ? ''
+                        : widget.bus.hasArrivedDestination
+                            ? "Bus has arrived"
+                                " at destination"
+                            : 'Bus has not arrived at destination',
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

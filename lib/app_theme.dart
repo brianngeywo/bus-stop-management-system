@@ -5,12 +5,12 @@ class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor:
-        Color(0xFF00008B), // Adjust the primary color to your preference
+        const Color(0xFF00008B), // Adjust the primary color to your preference
     scaffoldBackgroundColor: Colors.white,
     canvasColor: Colors.grey[50],
     cardColor: Colors.white,
     dividerColor: Colors.grey[300],
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
       headline1: TextStyle(
           fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
       headline2: TextStyle(
@@ -42,7 +42,7 @@ class AppTheme {
     canvasColor: Colors.grey[800],
     cardColor: Colors.grey[850],
     dividerColor: Colors.grey[700],
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
       headline1: TextStyle(
           fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
       headline2: TextStyle(
@@ -72,17 +72,17 @@ AppBarTheme darkAppBarTheme = AppBarTheme(
   backgroundColor: Colors.grey[900],
   elevation: 0,
   shadowColor: Colors.transparent,
-  iconTheme: IconThemeData(color: Colors.white),
-  actionsIconTheme: IconThemeData(color: Colors.white),
+  iconTheme: const IconThemeData(color: Colors.white),
+  actionsIconTheme: const IconThemeData(color: Colors.white),
   centerTitle: false,
   titleSpacing: 0,
   toolbarHeight: kToolbarHeight,
-  toolbarTextStyle: TextStyle(
+  toolbarTextStyle: const TextStyle(
     color: Colors.white,
     fontSize: 20,
     fontWeight: FontWeight.bold,
   ),
-  titleTextStyle: TextStyle(
+  titleTextStyle: const TextStyle(
     color: Colors.white,
     fontSize: 20,
     fontWeight: FontWeight.bold,

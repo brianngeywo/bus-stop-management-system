@@ -1,5 +1,6 @@
 import 'package:bus_sacco/driver_details_screen.dart';
 import 'package:bus_sacco/models/driver_model.dart';
+import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
@@ -50,42 +51,50 @@ class _DriversScreenState extends State<DriversScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Drivers'),
+        title: const Text('Drivers List'),
       ),
-      body: StreamBuilder<List<DriverModel>>(
-        stream: _driversStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('An error occurred'),
-            );
-          }
-          if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DriverDetailsScreen(
-                          driver: snapshot.data![index],
-                        ),
-                      ),
-                    );
-                  },
-                  title: Text(snapshot.data![index].name),
-                  subtitle: Text(snapshot.data![index].contactInfo),
-                );
+      body: Row(
+        children: [
+          MySidebar(),
+          Expanded(
+            flex: 4,
+            child: StreamBuilder<List<DriverModel>>(
+              stream: _driversStream(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('An error occurred'),
+                  );
+                }
+                if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DriverDetailsScreen(
+                                driver: snapshot.data![index],
+                              ),
+                            ),
+                          );
+                        },
+                        title: Text(snapshot.data![index].name),
+                        subtitle: Text(snapshot.data![index].contactInfo),
+                      );
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
               },
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
     );
   }

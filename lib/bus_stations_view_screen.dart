@@ -1,6 +1,7 @@
 import 'package:bus_sacco/bus_station_details_screen.dart';
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/models/bus_station.dart';
+import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 
 import 'models/sacco_model.dart';
@@ -56,93 +57,7 @@ class _BusStationsViewScreenState extends State<BusStationsViewScreen> {
       ),
       body: Row(
         children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.only(right: 16.0),
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.location_on),
-                  title: const Text('Bus Stations'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/bus_stations');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.business),
-                  title: const Text('Saccos'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/saccos');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.directions_bus),
-                  title: const Text('Buses'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/buses');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.person),
-                  title: const Text('Drivers'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/drivers');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.map),
-                  title: const Text('Bus Routes'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/bus_routes');
-                  },
-                ),
-                const Divider(),
-                Container(
-                  padding: const EdgeInsets.all(16.0),
-                  child: const Text(
-                    'Registration',
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.location_on),
-                  title: const Text('Register Bus Station'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/bus_station_registration');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.business),
-                  title: const Text('Register Sacco'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/sacco_registration');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.directions_bus),
-                  title: const Text('Register Bus'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/bus_registration');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.person),
-                  title: const Text('Register Driver'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/driver_registration');
-                  },
-                ),
-                ListTile(
-                  // add appropriate icon according to the registration item
-                  leading: const Icon(Icons.map),
-                  title: const Text('Register Bus Route'),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/bus_route_registration');
-                  },
-                ),
-              ],
-            ),
-          ),
+          const MySidebar(),
           Expanded(
             flex: 4,
             child: StreamBuilder<List<BusStationModel>>(
@@ -162,14 +77,14 @@ class _BusStationsViewScreenState extends State<BusStationsViewScreen> {
                       return ListTile(
                         title: Text(
                           busStations[index].name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         subtitle: Text(
                           'Location: ${busStations[index].location}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
                           ),
@@ -188,7 +103,7 @@ class _BusStationsViewScreenState extends State<BusStationsViewScreen> {
                     },
                   );
                 }
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               },

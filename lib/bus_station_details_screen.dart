@@ -2,6 +2,7 @@ import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/models/bus_station.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
 import 'package:bus_sacco/sacco_details_screen.dart';
+import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 
 class BusStationDetailsScreen extends StatefulWidget {
@@ -34,44 +35,53 @@ class _BusStationDetailsScreenState extends State<BusStationDetailsScreen> {
       appBar: AppBar(
         title: Text(widget.busStation.name),
       ),
-      body: Column(
+      body: Row(
         children: [
-          ListTile(
-            title: const Text('Location:'),
-            subtitle: Text(widget.busStation.location),
+          const MySidebar(),
+          Expanded(
+            flex: 4,
+            child: Column(
+              children: [
+                Text(widget.busStation.name,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 20),
+                ListTile(
+                  title: const Text('Location'),
+                  subtitle: Text(widget.busStation.location),
+                ),
+                const SizedBox(height: 20),
+                const Text('Listed Saccos',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                StreamBuilder<List<SaccoModel>>(
+                    stream: saccoStream(widget.busStation.saccoIds),
+                    builder: (context, snapshot) {
+                      var saccos = snapshot.data!;
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: saccos.length,
+                        itemBuilder: (context, index) {
+                          SaccoModel sacco = saccos[index];
+                          return ListTile(
+                            title: Text(sacco.name),
+                            subtitle: Text(sacco.location),
+                            trailing: Text(sacco.phoneNumber),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SaccoDetailsScreen(sacco: sacco)));
+                            },
+                          );
+                        },
+                      );
+                    }),
+              ],
+            ),
           ),
-          ListTile(
-            title: const Text('ID:'),
-            subtitle: Text(widget.busStation.stationId.toString()),
-          ),
-          const SizedBox(height: 20),
-          const Text('Saccos:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          StreamBuilder<List<SaccoModel>>(
-              stream: saccoStream(widget.busStation.saccoIds),
-              builder: (context, snapshot) {
-                var saccos = snapshot.data!;
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: saccos.length,
-                  itemBuilder: (context, index) {
-                    SaccoModel sacco = saccos[index];
-                    return ListTile(
-                      title: Text(sacco.name),
-                      subtitle: Text('Contact: ${sacco.phoneNumber}'),
-                      trailing: Text('ID: ${sacco.saccoId}'),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    SaccoDetailsScreen(sacco: sacco)));
-                      },
-                    );
-                  },
-                );
-              }),
         ],
       ),
     );
@@ -107,6 +117,6 @@ class _BusStationDetailsScreenState extends State<BusStationDetailsScreen> {
         return saccos;
       });
     }
-    return saccos != null ? Stream.value(saccos) : Stream.empty();
+    return saccos != null ? Stream.value(saccos) : const Stream.empty();
   }
 }

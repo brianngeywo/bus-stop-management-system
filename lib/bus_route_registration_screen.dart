@@ -1,5 +1,6 @@
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
+import 'package:bus_sacco/sidebar.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
@@ -78,52 +79,69 @@ class _BusRouteRegistrationScreenState
       appBar: AppBar(
         title: const Text('Register Bus Route'),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextField(
-                    controller: _sourceController,
-                    decoration: const InputDecoration(labelText: 'Source'),
+      body: Row(
+        children: [
+          MySidebar(),
+          Expanded(
+            flex: 4,
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'TranspoLink Register New Bus Route',
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
+                        const SizedBox(height: 16.0),
+                        TextField(
+                          controller: _sourceController,
+                          decoration:
+                              const InputDecoration(labelText: 'Source'),
+                        ),
+                        const SizedBox(height: 16.0),
+                        TextField(
+                          controller: _destinationController,
+                          decoration:
+                              const InputDecoration(labelText: 'Destination'),
+                        ),
+                        const SizedBox(height: 16.0),
+                        const Text('Stops',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8.0),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _stops.length,
+                          itemBuilder: (context, index) =>
+                              _buildStopTextField(index),
+                        ),
+                        const SizedBox(height: 8.0),
+                        TextButton(
+                          onPressed: _addStop,
+                          child: const Text('Add Stop'),
+                        ),
+                        const SizedBox(height: 16.0),
+                        TextField(
+                          controller: _fareRateController,
+                          decoration:
+                              const InputDecoration(labelText: 'Fare Rate'),
+                          keyboardType: TextInputType.number,
+                        ),
+                        const SizedBox(height: 24.0),
+                        ElevatedButton(
+                          onPressed: _registerBusRoute,
+                          child: const Text('Register'),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 16.0),
-                  TextField(
-                    controller: _destinationController,
-                    decoration: const InputDecoration(labelText: 'Destination'),
-                  ),
-                  const SizedBox(height: 16.0),
-                  const Text('Stops',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8.0),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _stops.length,
-                    itemBuilder: (context, index) => _buildStopTextField(index),
-                  ),
-                  const SizedBox(height: 8.0),
-                  TextButton(
-                    onPressed: _addStop,
-                    child: const Text('Add Stop'),
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextField(
-                    controller: _fareRateController,
-                    decoration: const InputDecoration(labelText: 'Fare Rate'),
-                    keyboardType: TextInputType.number,
-                  ),
-                  const SizedBox(height: 24.0),
-                  ElevatedButton(
-                    onPressed: _registerBusRoute,
-                    child: const Text('Register'),
-                  ),
-                ],
-              ),
-            ),
+          ),
+        ],
+      ),
     );
   }
 
