@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "800408495477",
+    "project_id": "transpolink-management-system",
+    "storage_bucket": "transpolink-management-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:800408495477:android:691bad1b7f64ad70995f3c",
+        "android_client_info": {
+          "package_name": "com.station.bus_sacco"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "800408495477-nghd1a5mr7mopct3coh3r7pk6f67bru9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBw6qwqGbN3CNATxgiT56r6V75B4RLuzG4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "800408495477-nghd1a5mr7mopct3coh3r7pk6f67bru9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
