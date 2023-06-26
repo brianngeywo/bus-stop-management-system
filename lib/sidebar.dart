@@ -7,9 +7,12 @@ import 'package:bus_sacco/buses_screen.dart';
 import 'package:bus_sacco/dashboard_screen.dart';
 import 'package:bus_sacco/driver_registration_screen.dart';
 import 'package:bus_sacco/drivers_screen.dart';
+import 'package:bus_sacco/login.dart';
 import 'package:bus_sacco/sacco_registration_screen.dart';
 import 'package:bus_sacco/saccos_screen.dart';
 import 'package:flutter/material.dart';
+
+import 'constants.dart';
 
 class MySidebar extends StatefulWidget {
   const MySidebar({super.key});
@@ -158,6 +161,19 @@ class _MySidebarState extends State<MySidebar> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => BusStationRegistrationScreen()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout_sharp, color: Colors.white),
+              title:
+                  const Text('Logout', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                auth.signOut();
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (context) {
+                    return LoginPage();
+                  },
+                ));
               },
             ),
           ],

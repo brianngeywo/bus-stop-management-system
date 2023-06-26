@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 FirebaseFirestore firestore = FirebaseFirestore.instance;
+FirebaseAuth auth = FirebaseAuth.instance;
 CollectionReference<Map<String, dynamic>> busesCollection =
     firestore.collection('buses');
 CollectionReference<Map<String, dynamic>> driversCollection =

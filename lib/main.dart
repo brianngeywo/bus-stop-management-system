@@ -1,9 +1,10 @@
 import 'package:bus_sacco/app_theme.dart';
+import 'package:bus_sacco/constants.dart';
+import 'package:bus_sacco/dashboard_screen.dart';
 import 'package:bus_sacco/firebase_options.dart';
+import 'package:bus_sacco/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'dashboard_screen.dart';
 
 //initialize firebase
 void main() async {
@@ -21,7 +22,7 @@ class DashboardApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Dashboard',
       theme: AppTheme.lightTheme,
-      home: DashboardScreen(),
+      home: auth.currentUser != null ? DashboardScreen() : LoginPage(),
     );
   }
 }

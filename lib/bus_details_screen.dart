@@ -149,13 +149,13 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
                             );
                           },
                           title: Text(
-                            sacco!.name,
+                            'Sacco: ${sacco!.name}',
                             style: const TextStyle(
                               fontSize: 18,
                             ),
                           ),
                           subtitle: Text(
-                            sacco!.location,
+                            'Sacco location: ${sacco!.location}',
                             style: const TextStyle(
                               fontSize: 18,
                             ),
