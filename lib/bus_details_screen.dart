@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:bus_sacco/bus_route_details_screen.dart';
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/driver_details_screen.dart';
@@ -8,6 +10,7 @@ import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
 import 'package:bus_sacco/sacco_details_screen.dart';
 import 'package:bus_sacco/sidebar.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 
 class BusDetailsScreen extends StatefulWidget {
@@ -34,12 +37,51 @@ class _BusDetailsScreenState extends State<BusDetailsScreen> {
     super.initState();
   }
 
+  void _generateReport() {
+    List<List<dynamic>> csvData = [];
+
+    // Add header row
+    csvData.add([
+      'Driver Name',
+      'Number Plate',
+      'Bus Route',
+      'Sacco Name',
+      'Sacco Location',
+      'Bus Status',
+    ]);
+
+    // Add data row
+    csvData.add([
+      driver != null ? driver!.name : '',
+      widget.bus.numberPlate,
+      route != null ? '${route!.source} - ${route!.destination}' : '',
+      sacco != null ? sacco!.name : '',
+      sacco != null ? sacco!.location : '',
+      widget.bus.hasLeftSource == true
+          ? 'The bus has already left the station'
+          : 'The bus is yet to leave the station',
+    ]);
+
+    String csvString = const ListToCsvConverter().convert(csvData);
+
+    final encodedUri = Uri.dataFromString(csvString).toString();
+    AnchorElement(
+      href: encodedUri,
+    )
+      ..setAttribute('download', 'bus_details_report.csv')
+      ..click();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Retrieve the related entities
 
     return Scaffold(
       appBar: mainAppBar('Bus Details'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _generateReport,
+        child: const Icon(Icons.download),
+      ),
       body: Row(
         children: [
           const MySidebar(),

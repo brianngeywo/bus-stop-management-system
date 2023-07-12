@@ -1,7 +1,10 @@
+import 'dart:html';
+
 import 'package:bus_sacco/bus_route_details_screen.dart';
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/dashboard_item_tile.dart';
 import 'package:bus_sacco/sidebar.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 
 import 'main_app_bar.dart';
@@ -25,10 +28,43 @@ class _BusRoutesScreenState extends State<BusRoutesScreen> {
     super.initState();
   }
 
+  void _generateReport() {
+    List<List<dynamic>> csvData = [];
+
+    // Add header row
+    csvData.add([
+      'Source',
+      'Destination',
+      'Distance',
+      'Duration',
+    ]);
+
+    // Add data rows
+    for (var route in busRoutes) {
+      csvData.add([
+        route.source,
+        route.destination,
+      ]);
+    }
+
+    String csvString = const ListToCsvConverter().convert(csvData);
+
+    final encodedUri = Uri.dataFromString(csvString).toString();
+    AnchorElement(
+      href: encodedUri,
+    )
+      ..setAttribute('download', 'bus_routes_report.csv')
+      ..click();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: mainAppBar('Bus Routes'),
+      appBar: mainAppBar('TranspoLink Sacco Bus Routes'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _generateReport,
+        child: const Icon(Icons.download),
+      ),
       body: Row(
         children: [
           const MySidebar(),

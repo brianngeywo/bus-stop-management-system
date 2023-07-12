@@ -45,7 +45,7 @@ class _BusesScreenState extends State<BusesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: mainAppBar('Buses'),
+      appBar: mainAppBar('TranspoLink Sacco Buses'),
       body: Row(
         children: [
           MySidebar(),

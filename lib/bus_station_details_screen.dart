@@ -1,9 +1,12 @@
+import 'dart:html';
+
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/dashboard_item_tile.dart';
 import 'package:bus_sacco/models/bus_station.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
 import 'package:bus_sacco/sacco_details_screen.dart';
 import 'package:bus_sacco/sidebar.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 
 import 'main_app_bar.dart';
@@ -32,10 +35,73 @@ class _BusStationDetailsScreenState extends State<BusStationDetailsScreen> {
     super.initState();
   }
 
+  void _generateReport() async {
+    List<List<dynamic>> csvData = [];
+    List<SaccoModel> saccos = [];
+
+    csvData.add(['Bus Station Name', 'Location']); // Add header row
+    Future<List<SaccoModel>> fetchSaccos(List<String> saccoIds) async {
+      for (var saccoId in saccoIds) {
+        await saccoCollection
+            .where('saccoId', isEqualTo: saccoId)
+            .get()
+            .then((value) {
+          for (var element in value.docs) {
+            saccos.add(SaccoModel.fromMap(element.data()));
+          }
+        });
+      }
+      return saccos;
+    }
+
+    fetchSaccos(widget.busStation.saccoIds);
+    csvData.add([
+      widget.busStation.name,
+      widget.busStation.location,
+    ]); // Add bus station details row
+
+    if (saccos.isNotEmpty) {
+      csvData.add([]); // Add empty row for separation
+
+      for (var sacco in saccos) {
+        csvData.add([
+          'Sacco Name:',
+          sacco.name,
+        ]);
+        csvData.add([
+          'Location:',
+          sacco.location,
+        ]);
+        csvData.add([
+          'Phone Number:',
+          sacco.phoneNumber,
+        ]);
+        csvData.add([
+          'Email Address:',
+          sacco.emailAdress,
+        ]);
+        csvData.add([]); // Add empty row for separation
+      }
+    }
+
+    String csvString = const ListToCsvConverter().convert(csvData);
+
+    final encodedUri = Uri.dataFromString(csvString).toString();
+    AnchorElement(
+      href: encodedUri,
+    )
+      ..setAttribute('download', 'bus_station_report.csv')
+      ..click();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: mainAppBar(widget.busStation.name),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _generateReport,
+        child: const Icon(Icons.download),
+      ),
       body: Row(
         children: [
           const MySidebar(),

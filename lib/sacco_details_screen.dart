@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:bus_sacco/bus_details_screen.dart';
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/driver_details_screen.dart';
@@ -6,6 +8,7 @@ import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/models/sacco_model.dart';
 import 'package:bus_sacco/sidebar.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 
 import 'main_app_bar.dart';
@@ -29,10 +32,84 @@ class _SaccoDetailsScreenState extends State<SaccoDetailsScreen> {
     super.initState();
   }
 
+  void _generateReport() {
+    List<List<dynamic>> csvData = [];
+
+    // Add header row
+    csvData.add([
+      'Sacco Name',
+      'Contact Information',
+      'Days of Operation',
+      'Driver Name',
+      'Driver Contact Info',
+      'Bus Number Plate',
+    ]);
+
+    // Add data rows
+    List<DriverModel> drivers = getDriversBySaccoId(widget.sacco.saccoId);
+    List<BusModel> buses = getBusesBySaccoId(widget.sacco.saccoId);
+
+    int maxRowCount =
+        drivers.length > buses.length ? drivers.length : buses.length;
+
+    for (int i = 0; i < maxRowCount; i++) {
+      List<dynamic> rowData = [];
+
+      // Sacco Name, Contact Information, Days of Operation (displayed only in the first row)
+      if (i == 0) {
+        rowData.add(widget.sacco.name);
+        rowData.add(widget.sacco.phoneNumber);
+        rowData.add(widget.sacco.emailAdress);
+        rowData.add(widget.sacco.activeDays.join(
+            ', ')); // Convert days of operation list to a comma-separated string
+      } else {
+        rowData.addAll([
+          '',
+          '',
+          '',
+          ''
+        ]); // Placeholder for Sacco Name, Contact Information, Days of Operation columns
+      }
+
+      // Driver Name and Driver Contact Info
+      if (i < drivers.length) {
+        rowData.add(drivers[i].name);
+        rowData.add(drivers[i].contactInfo);
+      } else {
+        rowData.addAll([
+          '',
+          ''
+        ]); // Placeholder for Driver Name and Driver Contact Info columns
+      }
+
+      // Bus Number Plate
+      if (i < buses.length) {
+        rowData.add(buses[i].numberPlate);
+      } else {
+        rowData.add(''); // Placeholder for Bus Number Plate column
+      }
+
+      csvData.add(rowData);
+    }
+
+    String csvString = const ListToCsvConverter().convert(csvData);
+
+    final encodedUri = Uri.dataFromString(csvString).toString();
+    AnchorElement(
+      href: encodedUri,
+    )
+      ..setAttribute('download', 'sacco_details_report.csv')
+      ..click();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: mainAppBar(widget.sacco.name + ' Details'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _generateReport,
+        child: const Icon(Icons.download),
+      ),
       body: Row(
         children: [
           const MySidebar(),

@@ -12,7 +12,7 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: mainAppBar('TranspoLink Dashboard'),
+      appBar: mainAppBar('TranspoLink Sacco Dashboard'),
       body: Row(
         children: [
           MySidebar(),

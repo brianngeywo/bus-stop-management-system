@@ -32,6 +32,9 @@ class AppTheme {
           fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black),
     ),
     appBarTheme: darkAppBarTheme,
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: Colors.cyan[900],
+    ),
     // Add other theme properties specific to the light theme
   );
 

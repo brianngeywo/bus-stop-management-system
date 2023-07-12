@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:bus_sacco/bus_details_screen.dart';
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/main_app_bar.dart';
@@ -5,6 +7,7 @@ import 'package:bus_sacco/models/bus_model.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/sidebar.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 
 class DriverDetailsScreen extends StatefulWidget {
@@ -36,10 +39,47 @@ class _DriverDetailsScreenState extends State<DriverDetailsScreen> {
     super.initState();
   }
 
+  void _generateReport() async {
+    List<List<dynamic>> csvData = [];
+
+    // Add header row
+    csvData.add([
+      'Driver Name',
+      'Contact Info',
+      'Assigned Buses',
+    ]);
+    // Add data row
+    List<BusModel> buses = await getBusesByDriverId(widget.driver.driverId);
+
+    List<dynamic> rowData = [
+      widget.driver.name,
+      widget.driver.contactInfo,
+      buses
+          .map((bus) => bus.numberPlate)
+          .toList()
+          .join(', '), // Convert assigned buses to a comma-separated string
+    ];
+
+    csvData.add(rowData);
+
+    String csvString = const ListToCsvConverter().convert(csvData);
+
+    final encodedUri = Uri.dataFromString(csvString).toString();
+    AnchorElement(
+      href: encodedUri,
+    )
+      ..setAttribute('download', 'driver_details_report.csv')
+      ..click();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: mainAppBar('Driver Details'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _generateReport,
+        child: const Icon(Icons.download),
+      ),
       body: Row(
         children: [
           const MySidebar(),

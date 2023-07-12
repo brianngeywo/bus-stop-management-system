@@ -1,9 +1,12 @@
+import 'dart:html';
+
 import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/main_app_bar.dart';
 import 'package:bus_sacco/models/bus_model.dart';
 import 'package:bus_sacco/models/bus_route_model.dart';
 import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/sidebar.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 
 import 'bus_details_screen.dart';
@@ -20,6 +23,50 @@ class BusRouteDetailsScreen extends StatefulWidget {
 class _BusRouteDetailsScreenState extends State<BusRouteDetailsScreen> {
   List<BusModel> buses = [];
   List<DriverModel> drivers = [];
+  Future<void> _generateReport() async {
+    List<List<dynamic>> csvData = [];
+
+    // Add header row for route details
+    csvData.add(['Route Details']);
+    csvData.add(['Source', widget.route.source]);
+    csvData.add(['Destination', widget.route.destination]);
+    csvData.add(['Stops', widget.route.stops.join(', ')]);
+    csvData.add(['Fare Price', widget.route.fareRate.toString()]);
+    csvData.add([]); // Add empty row for spacing
+
+    // Add header row for buses
+    csvData.add(['Buses in the Route']);
+    csvData.add(['Number Plate', 'Status']);
+    csvData.add([]); // Add empty row for spacing
+
+    // Add data rows for buses
+    for (var bus in buses) {
+      csvData.add([
+        bus.numberPlate,
+        bus.hasArrivedDestination ? 'Arrived' : 'On the way'
+      ]);
+    }
+    csvData.add([]); // Add empty row for spacing
+
+    // Add header row for drivers
+    csvData.add(['Drivers in the Route']);
+    csvData.add(['Driver Name', 'Contact Info']);
+    csvData.add([]); // Add empty row for spacing
+
+    // Add data rows for drivers
+    for (var driver in drivers) {
+      csvData.add([driver.name, driver.contactInfo]);
+    }
+
+    String csvString = const ListToCsvConverter().convert(csvData);
+
+    final encodedUri = Uri.dataFromString(csvString).toString();
+    AnchorElement(
+      href: encodedUri,
+    )
+      ..setAttribute('download', 'route_details_report.csv')
+      ..click();
+  }
 
   void getBusRouteDetails() async {
     buses = await getBusesByRouteId(widget.route.routeId);
@@ -37,6 +84,10 @@ class _BusRouteDetailsScreenState extends State<BusRouteDetailsScreen> {
     return Scaffold(
       appBar:
           mainAppBar(widget.route.source + ' - ' + widget.route.destination),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _generateReport,
+        child: const Icon(Icons.download),
+      ),
       body: Row(
         children: [
           const MySidebar(),

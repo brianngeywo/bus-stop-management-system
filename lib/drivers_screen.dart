@@ -1,10 +1,12 @@
+import 'dart:html';
+import 'package:bus_sacco/constants.dart';
 import 'package:bus_sacco/dashboard_item_tile.dart';
 import 'package:bus_sacco/driver_details_screen.dart';
 import 'package:bus_sacco/models/driver_model.dart';
 import 'package:bus_sacco/sidebar.dart';
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 
-import 'constants.dart';
 import 'main_app_bar.dart';
 
 class DriversScreen extends StatefulWidget {
@@ -14,20 +16,17 @@ class DriversScreen extends StatefulWidget {
 
 class _DriversScreenState extends State<DriversScreen> {
   List<DriverModel> drivers = [];
-  // fetch drivers stream
+
   Stream<List<DriverModel>> _driversStream() {
     return driversCollection.snapshots().map((snapshot) {
       List<DriverModel> drivers = [];
       for (var document in snapshot.docs) {
-        setState(() {
-          drivers.add(DriverModel.fromMap(document.data()));
-        });
+        drivers.add(DriverModel.fromMap(document.data()));
       }
       return drivers;
     });
   }
 
-  // fetch drivers
   List<DriverModel> _fetchDrivers() {
     driversCollection.get().then((snapshot) {
       List<DriverModel> drivers = [];
@@ -35,24 +34,48 @@ class _DriversScreenState extends State<DriversScreen> {
         final driver = DriverModel.fromMap(doc.data());
         drivers.add(driver);
       }
-    });
-    setState(() {
-      drivers = drivers;
+      setState(() {
+        this.drivers = drivers;
+      });
     });
     return drivers;
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     _fetchDrivers();
     super.initState();
+  }
+
+  void _generateReport() {
+    List<List<dynamic>> csvData = [];
+    csvData.add(['Driver Name', 'Contact Info']); // Add header row
+
+    for (var driver in drivers) {
+      List<dynamic> rowData = [];
+      rowData.add(driver.name);
+      rowData.add(driver.contactInfo);
+      csvData.add(rowData);
+    }
+
+    String csvString = const ListToCsvConverter().convert(csvData);
+
+    final encodedUri = Uri.dataFromString(csvString).toString();
+    AnchorElement(
+      href: encodedUri,
+    )
+      ..setAttribute('download', 'drivers_report.csv')
+      ..click();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: mainAppBar('Drivers List'),
+      appBar: mainAppBar('TranspoLink Sacco Drivers List'),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _generateReport,
+        child: const Icon(Icons.download),
+      ),
       body: Row(
         children: [
           MySidebar(),
