@@ -8,8 +8,7 @@ import 'package:bus_sacco/dashboard_screen.dart';
 import 'package:bus_sacco/driver_registration_screen.dart';
 import 'package:bus_sacco/drivers_screen.dart';
 import 'package:bus_sacco/login.dart';
-import 'package:bus_sacco/sacco_registration_screen.dart';
-import 'package:bus_sacco/saccos_screen.dart';
+import 'package:bus_sacco/reports_page.dart';
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
@@ -52,16 +51,6 @@ class _MySidebarState extends State<MySidebar> {
                 }));
               },
             ),
-            // ListTile(
-            //   leading: const Icon(Icons.business, color: Colors.white),
-            //   title:
-            //       const Text('Saccos', style: TextStyle(color: Colors.white)),
-            //   onTap: () {
-            //     Navigator.push(context, MaterialPageRoute(builder: (context) {
-            //       return SaccosScreen();
-            //     }));
-            //   },
-            // ),
             ListTile(
               leading: const Icon(Icons.directions_bus, color: Colors.white),
               title: const Text('Buses', style: TextStyle(color: Colors.white)),
@@ -119,17 +108,6 @@ class _MySidebarState extends State<MySidebar> {
                         builder: (context) => BusRouteRegistrationScreen()));
               },
             ),
-            // ListTile(
-            //   leading: const Icon(Icons.business, color: Colors.white),
-            //   title: const Text('Register Sacco',
-            //       style: TextStyle(color: Colors.white)),
-            //   onTap: () {
-            //     Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //             builder: (context) => SaccoRegistrationScreen()));
-            //   },
-            // ),
             ListTile(
               leading: const Icon(Icons.person, color: Colors.white),
               title: const Text('Register Driver',
@@ -161,6 +139,30 @@ class _MySidebarState extends State<MySidebar> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => BusStationRegistrationScreen()));
+              },
+            ),
+            const Divider(),
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              child: const Text(
+                'Reports',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                ),
+              ),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.map, color: Colors.white),
+              title: const Text('View reports',
+                  style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ReportsPage()));
               },
             ),
             ListTile(
